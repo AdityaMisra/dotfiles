@@ -26,7 +26,7 @@ shopt -s checkwinsize
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
-source /usr/local/bin/virtualenvwrapper.sh
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -37,13 +37,13 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+    xterm-color|*-256color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-force_color_prompt=yes
+#force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -90,6 +90,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -132,32 +135,40 @@ function git_branch_more(){
     done|sort
 }
 
-$WORKON_HOME='/home/aditya/.virtualenvs/'
-alias cdbb3='cd /home/aditya/bigbasket/BigBasket && workon bigbasket'
+export WORKON_HOME=$HOME/.virtualenvs
+
 alias gd='git diff'
 alias gb=git_branch_more
 alias gs='git status'
-alias solr='cd /home/aditya/apache-solr-3.6.2/example && java -jar start.jar'
 alias sp='./manage.py shell_plus'
 alias db='./manage.py dbshell'
 alias runs='./manage.py runserver'
 alias runsplus='./manage.py runserver_plus'
-alias cdfp='cd /home/aditya/firebase_projects'
-alias iqc="(jupyter qtconsole --ConsoleWidget.font_family=Monaco --ConsoleWidget.font_size=10 --JupyterWidget.gui_completion=droplist 2&>/dev/null &)"
-alias runpycharm='cd ~/pycharm_2016_2_3/bin/ && ./pycharm.sh'
-alias gpo='git push origin'
-alias jcdbb='cd /home/aditya/bigbasket_java/BigBasketJava'
+alias cdgo='cd /home/aditya/src/github.com/AdityaMisra'
+alias cdbb='source /home/aditya/.virtualenvs/bigbasket/bin/activate; cd /home/aditya/bigbasket/BigBasket'
 
 # Set config variables first
 GIT_PROMPT_ONLY_IN_REPO=1
-# GIT_PROMPT_THEME=Custom # use custom .git-prompt-colors.sh
-GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
 
+# GIT_PROMPT_FETCH_REMOTE_STATUS=0   # uncomment to avoid fetching remote status
+
+# GIT_PROMPT_SHOW_UPSTREAM=1 # uncomment to show upstream tracking branch
+# GIT_PROMPT_SHOW_UNTRACKED_FILES=all # can be no, normal or all; determines counting of untracked files
+ 
+# GIT_PROMPT_SHOW_CHANGED_FILES_COUNT=0 # uncomment to avoid printing the number of changed files
+
+# GIT_PROMPT_STATUS_COMMAND=gitstatus_pre-1.7.10.sh # uncomment to support Git older than 1.7.10
+
+# GIT_PROMPT_START=...    # uncomment for custom prompt start sequence
+# GIT_PROMPT_END=...      # uncomment for custom prompt end sequence
+
+# as last entry source the gitprompt script
+# GIT_PROMPT_THEME=Custom # use custom theme specified in file GIT_PROMPT_THEME_FILE (default ~/.git-prompt-colors.sh)
+# GIT_PROMPT_THEME_FILE=~/.git-prompt-colors.sh
+# GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
 source ~/.bash-git-prompt/gitprompt.sh
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+# added by Anaconda2 installer
+export PATH="/home/aditya/anaconda2/bin:$PATH"
 
-export PATH="/home/aditya/anaconda3/bin:$PATH"
-alias india_vpn="cd /home/aditya/mukul_openvpn_files && sudo openvpn --config mukul.ovpn"
-alias cdbb='source /home/aditya/.virtualenvs/bigbasket1.11/bin/activate; cd /home/aditya/bigbasket/BigBasket'
+alias qt="(ipython qtconsole --JupyterWidget.font_family=\"Monaco [unknown]\" --JupyterWidget.font_size=10 --JupyterWidget.gui_completion=droplist 2&>/dev/null &)"
