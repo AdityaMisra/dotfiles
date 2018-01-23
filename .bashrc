@@ -171,4 +171,4 @@ source ~/.bash-git-prompt/gitprompt.sh
 # added by Anaconda2 installer
 export PATH="/home/aditya/anaconda2/bin:$PATH"
 
-alias qt="(ipython qtconsole --JupyterWidget.font_family=\"Monaco [unknown]\" --JupyterWidget.font_size=10 --JupyterWidget.gui_completion=droplist 2&>/dev/null &)"
+alias qt="(ipython qtconsole --JupyterWidget.font_family=\"Monaco\" --JupyterWidget.font_size=10 --JupyterWidget.gui_completion=droplist 2&>/dev/null &)"
