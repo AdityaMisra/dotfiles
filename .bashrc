@@ -143,7 +143,7 @@ alias db='./manage.py dbshell'
 alias runs='./manage.py runserver'
 alias runsplus='./manage.py runserver_plus'
 alias cdgo='cd /home/aditya/src/github.com/AdityaMisra'
-alias cdbb='source /home/aditya/.virtualenvs/bigbasket/bin/activate; cd /home/aditya/bigbasket/BigBasket'
+alias cdbb='source /home/aditya/.virtualenvs/bb/bin/activate; cd /home/aditya/bb/BB'
 
 # Set config variables first
 GIT_PROMPT_ONLY_IN_REPO=1
