@@ -64,7 +64,7 @@ function parse_git_branch() {
 if [ "$color_prompt" = yes ]; then
     #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
     #PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u\[\033[01;35m\]@\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;31m\]\w\[\033[00m\]$(parse_git_branch)\[\033[0;36m\]\$ '
-    PS1="[\[\033[33m\]\d \A] \[\033[32m\]\u\n\[\033[31m\]\w\[\033[33m\]\$\[\033[0m\]"
+    PS1="[\[\033[33m\]\d \A] \[\033[32m\]\u\n\[\033[31m\]\w\[\033[33m\]\$ \[\033[0m\]"
 else
     # PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
     PS1="[\d \A] \u\n\w\$"
@@ -80,6 +80,19 @@ xterm*|rxvt*)
     ;;
 esac
 
+##################################### Aliases Start #####################################
+source ~/.treebo_bash
+alias ipython='ipython --pprint --pdb'
+alias gd='git diff'
+alias gb=git_branch_more
+alias gs='git status'
+alias sp='./manage.py shell_plus'
+alias db='./manage.py dbshell'
+alias runs='./manage.py runserver'
+alias runsplus='./manage.py runserver_plus'
+alias pip='pip3'
+
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -92,11 +105,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+alias grep='grep --color=auto'
+
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
-alias ll='ls -alFhG'
+alias l='ls -alFhG'
 export LSCOLORS=dxfxcxdxbxegedabagacad
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -111,6 +126,8 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
+
+##################################### Aliases End #####################################
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -129,7 +146,7 @@ function git_branch_more(){
         branch_name=$(parse_git_branch | cut -d '(' -f2 | cut -d ')' -f1)
         if [[ $k == $branch_name ]]
         then
-            echo -e  `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k|head -n 1`\\t\\033[32m$k  \\t\\033[32m"<==";
+            echo -e  `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k|head -n 1`\\t\\033[32m$k  \\t\\033[32m"<=="\\033[0m;
         else
             echo -e  `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k|head -n 1`\\t$k;
         fi
@@ -138,15 +155,6 @@ function git_branch_more(){
 
 # export WORKON_HOME=$HOME/.virtualenvs
 
-alias gd='git diff'
-alias gb=git_branch_more
-alias gs='git status'
-alias sp='./manage.py shell_plus'
-alias db='./manage.py dbshell'
-alias runs='./manage.py runserver'
-alias runsplus='./manage.py runserver_plus'
-# alias cdgo='cd /home/aditya/src/github.com/AdityaMisra'
-
 # Set config variables first
 GIT_PROMPT_ONLY_IN_REPO=1
 
@@ -154,7 +162,7 @@ GIT_PROMPT_ONLY_IN_REPO=1
 
 # GIT_PROMPT_SHOW_UPSTREAM=1 # uncomment to show upstream tracking branch
 # GIT_PROMPT_SHOW_UNTRACKED_FILES=all # can be no, normal or all; determines counting of untracked files
- 
+
 # GIT_PROMPT_SHOW_CHANGED_FILES_COUNT=0 # uncomment to avoid printing the number of changed files
 
 # GIT_PROMPT_STATUS_COMMAND=gitstatus_pre-1.7.10.sh # uncomment to support Git older than 1.7.10
@@ -168,3 +176,30 @@ GIT_PROMPT_ONLY_IN_REPO=1
 # GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
 source /usr/local/share/gitprompt.sh
 
+export JAVA_HOME=$(/usr/libexec/java_home)
+
+
+# configuring golang
+export GOPATH=$HOME/go-workspace
+export GOROOT=/usr/local/opt/go/libexec
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin
+export GOOS='darwin'
+export GOARCH='amd64'
+
+# Configure the ANDROID_HOME environment variable
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/emulator
+
+alias pg-start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg-stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash
