@@ -1,0 +1,178 @@
+# Created by adityamisra for 5.6.2
+source $(dirname $(gem which colorls))/tab_complete.sh
+
+# Customise the Powerlevel9k prompts
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+dir
+virtualenv
+go_version
+vcs
+newline
+public_ip
+date
+time
+status
+custom_prompt
+)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+
+
+#################################### Color customization start ####################################
+POWERLEVEL9K_TIME_BACKGROUND='magenta'
+POWERLEVEL9K_DATE_BACKGROUND='magenta'
+POWERLEVEL9K_PUBLIC_IP_BACKGROUND='brown'
+
+POWERLEVEL9K_VIRTUALENV_BACKGROUND='yellow'
+
+# Advanced `vcs` color customization
+POWERLEVEL9K_VCS_CLEAN_FOREGROUND='black'
+POWERLEVEL9K_VCS_CLEAN_BACKGROUND='red'
+POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND='yellow'
+POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='black'
+POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='red'
+POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='brown'
+#################################### Color customization end ####################################
+
+
+#################################### custom prompt icon start ####################################
+# Add the custom prompt icon segment
+prompt_arr=('\ue62e' '\ue62d' '\ue764' '\ue780' '\uf2dc' '\uf2cd' '\uf121' '\uf286')
+
+rand=$[ $RANDOM % 9 ]
+
+random_prompt='$prompt_arr[$rand]'
+POWERLEVEL9K_CUSTOM_PROMPT="echo -n $random_prompt"
+POWERLEVEL9K_CUSTOM_PROMPT_FOREGROUND="red"
+POWERLEVEL9K_CUSTOM_PROMPT_BACKGROUND="brown"
+#################################### custom prompt icon end ####################################
+
+
+# Load Nerd Fonts with Powerlevel9k theme for Zsh
+POWERLEVEL9K_MODE='nerdfont-complete'
+
+
+source ~/powerlevel9k/powerlevel9k.zsh-theme
+
+
+# Load Zsh tools for syntax highlighting and autosuggestions
+HOMEBREW_FOLDER="/usr/local/share"
+source "$HOMEBREW_FOLDER/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$HOMEBREW_FOLDER/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+
+#################################### git branch function start ####################################
+# Add git branch if its present to PS1
+function parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+function git_branch_more(){
+    for k in `git branch|perl -pe s/^..//`;
+    do
+        branch_name=$(parse_git_branch | cut -d '(' -f2 | cut -d ')' -f1)
+        if [[ $k == $branch_name ]]
+        then
+            echo -e  $fg[red] `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k|head -n 1`\\t $k  \\t '\uf060';
+        else
+            echo -e  $fg[green] `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k|head -n 1`\\t$k;
+        fi
+    done|sort
+}
+#################################### git branch function end ####################################
+
+
+##################################### aliases start#####################################
+source ~/.treebo_bash
+alias ipython='ipython --pprint --pdb'
+alias gd='git diff'
+alias gb=git_branch_more
+alias gs='git status'
+alias sp='./manage.py shell_plus'
+alias db='./manage.py dbshell'
+alias runs='./manage.py runserver'
+alias runsplus='./manage.py runserver_plus'
+alias pip='pip3'
+
+# alias for colorls - colored substitute of ls
+alias lc='colorls -lA --sd'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    #alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+alias grep='grep --color=auto'
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias l='ls -alFhG'
+export LSCOLORS=dxfxcxdxbxegedabagacad
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+#################################### aliases end ####################################
+
+
+#################################### iterm tab title start ####################################
+# Set a color for iTerm2 tab title background using rgb values
+function title_background_color {
+  echo -ne "\033]6;1;bg;red;brightness;$ITERM2_TITLE_BACKGROUND_RED\a"
+  echo -ne "\033]6;1;bg;green;brightness;$ITERM2_TITLE_BACKGROUND_GREEN\a"
+  echo -ne "\033]6;1;bg;blue;brightness;$ITERM2_TITLE_BACKGROUND_BLUE\a"
+}
+ITERM2_TITLE_BACKGROUND_RED="18"
+ITERM2_TITLE_BACKGROUND_GREEN="26"
+ITERM2_TITLE_BACKGROUND_BLUE="33"
+title_background_color
+# Set iTerm2 tab title text
+function title_text {
+    echo -ne "\033]0;"$*"\007"
+}
+# set PWD as tab title
+title_text $PWD
+#################################### iterm tab title end ####################################
+
+
+#################################### language paths start ####################################
+export PATH="/Users/adityamisra/Library/Python/3.6/bin:$PATH"
+
+export JAVA_HOME=$(/usr/libexec/java_home)
+
+# configuring golang
+export GOPATH=$HOME/go-workspace
+export GOROOT=/usr/local/opt/go/libexec
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin
+export GOOS='darwin'
+export GOARCH='amd64'
+
+# Configure the ANDROID_HOME environment variable
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/emulator
+
+alias pg-start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg-stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash
+
+#################################### language paths end ####################################
