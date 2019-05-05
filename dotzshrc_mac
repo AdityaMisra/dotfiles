@@ -17,6 +17,9 @@ custom_prompt
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
 POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
 
+### Command completion activation
+autoload -U compinit
+compinit
 
 #################################### Color customization start ####################################
 POWERLEVEL9K_TIME_BACKGROUND='magenta'
