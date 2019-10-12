@@ -81,7 +81,7 @@ xterm*|rxvt*)
 esac
 
 ##################################### Aliases Start #####################################
-source ~/.treebo_bash
+source ~/.mvrc
 alias ipython='ipython --pprint --pdb'
 alias gd='git diff'
 alias gb=git_branch_more
@@ -90,7 +90,7 @@ alias sp='./manage.py shell_plus'
 alias db='./manage.py dbshell'
 alias runs='./manage.py runserver'
 alias runsplus='./manage.py runserver_plus'
-alias pip='pip3'
+#alias pip='pip3'
 
 
 # enable color support of ls and also add handy aliases
@@ -176,16 +176,14 @@ GIT_PROMPT_ONLY_IN_REPO=1
 # GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
 source /usr/local/share/gitprompt.sh
 
-export JAVA_HOME=$(/usr/libexec/java_home)
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
 
 # configuring golang
-export GOPATH=$HOME/go-workspace
+export GOPATH=$HOME/go-workspace # dont forget to change your path correctly!
 export GOROOT=/usr/local/opt/go/libexec
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
-export GOOS='darwin'
-export GOARCH='amd64'
 
 # Configure the ANDROID_HOME environment variable
 export ANDROID_HOME=$HOME/Library/Android/sdk
@@ -203,3 +201,8 @@ alias pg-stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.
 # tabtab source for sls package
 # uninstall by removing these lines or running `tabtab uninstall sls`
 [ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash
+
+# bash
+# source "$(navi widget bash)"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
