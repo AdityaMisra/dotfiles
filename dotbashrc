@@ -144,6 +144,7 @@ alias runs='./manage.py runserver'
 alias runsplus='./manage.py runserver_plus'
 alias cdgo='cd /home/aditya/src/github.com/AdityaMisra'
 alias cdbb='source /home/aditya/.virtualenvs/bb/bin/activate; cd /home/aditya/bb/BB'
+alias rm="rm -i"
 
 # Set config variables first
 GIT_PROMPT_ONLY_IN_REPO=1
