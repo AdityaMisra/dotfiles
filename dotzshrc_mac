@@ -95,6 +95,7 @@ alias db='./manage.py dbshell'
 alias runs='./manage.py runserver'
 alias runsplus='./manage.py runserver_plus'
 alias pip='pip3'
+alias rm="rm -i"
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
