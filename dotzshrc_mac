@@ -96,6 +96,7 @@ alias runs='./manage.py runserver'
 alias runsplus='./manage.py runserver_plus'
 alias pip='pip3'
 alias rm="rm -i"
+alias cdarea="cd ~/area51"
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -154,7 +155,7 @@ export PATH=/usr/local/bin:$PATH
 
 # configuring golang
 export GOPATH=$HOME/go-workspace
-export GOROOT=/usr/local/opt/go/libexec
+export GOROOT=/usr/local/Cellar/go/1.15.1/libexec
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
 
@@ -197,3 +198,4 @@ setopt    incappendhistory  #Immediately append to the history file, not just wh
 # source "$(navi widget zsh)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
