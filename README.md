@@ -8,6 +8,9 @@ https://omrobbie.com/iterm2-oh-my-zsh-powerlevel9k-nerd-fonts-dimmed-monokai/
 
 https://dev.to/kumareth/a-beginner-s-guide-for-setting-up-autocomplete-on-ohmyzsh-hyper-with-plugins-themes-47f2
 
+https://gist.github.com/kevin-smets/8568070
+https://github.com/QuentinWatt/dark-flat-iterm-colors
+
 https://medium.com/@christyjacob4/powerlevel9k-themes-f400759638c2
 https://github.com/Powerlevel9k/powerlevel9k
 https://github.com/Powerlevel9k/powerlevel9k/wiki/
