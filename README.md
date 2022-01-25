@@ -21,4 +21,5 @@ https://github.com/junegunn/vim-plug
 https://github.com/Valloric/YouCompleteMe
 
 https://github.com/sharkdp/bat
-
+https://github.com/muesli/duf
+https://github.com/ogham/exa
