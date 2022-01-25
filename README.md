@@ -23,3 +23,4 @@ A bash prompt that displays information about the current git repository. In par
 - https://github.com/sharkdp/bat
 - https://github.com/muesli/duf
 - https://github.com/ogham/exa
+- https://github.com/so-fancy/diff-so-fancy
