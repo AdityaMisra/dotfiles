@@ -16,10 +16,10 @@ https://github.com/Powerlevel9k/powerlevel9k
 https://github.com/Powerlevel9k/powerlevel9k/wiki/
 https://github.com/Powerlevel9k/powerlevel9k/wiki/Show-Off-Your-Config
 
-https://github.com/junegunn/vim-plug
+- https://github.com/junegunn/vim-plug
 
-https://github.com/Valloric/YouCompleteMe
+- https://github.com/Valloric/YouCompleteMe
 
-https://github.com/sharkdp/bat
-https://github.com/muesli/duf
-https://github.com/ogham/exa
+- https://github.com/sharkdp/bat
+- https://github.com/muesli/duf
+- https://github.com/ogham/exa
