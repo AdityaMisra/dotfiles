@@ -25,3 +25,5 @@ A bash prompt that displays information about the current git repository. In par
 - https://github.com/ogham/exa
 - https://github.com/so-fancy/diff-so-fancy
 - https://fig.io/
+
+- https://twitter.com/amilajack/status/1479328649820000256?s=21
