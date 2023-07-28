@@ -89,7 +89,7 @@ alias ipython='ipython --pprint --pdb'
 alias gd='git diff'
 alias gb=git_branch_more
 alias gs='git status'
-alias gl='git log --oneline --graph'
+alias gl="git log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%an%C(reset)%C(bold yellow)%d%C(reset) %C(dim white)- %s%C(reset)' --all"
 alias sp='./manage.py shell_plus'
 alias db='./manage.py dbshell'
 alias runs='./manage.py runserver'
