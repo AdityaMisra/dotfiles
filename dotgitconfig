@@ -1,5 +1,5 @@
 [user]
-    name = Aditya Misra
+	name = Aditya Misra
 	email = <EMAIL_ADDRESS>
 [core]
 	excludesfile = /Users/aditya.misra/.gitignore_global
