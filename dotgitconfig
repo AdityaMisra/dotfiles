@@ -1,15 +1,9 @@
 [user]
     name = Aditya Misra
-	email = aditya.misra@quantcast.com
+	email = <EMAIL_ADDRESS>
 [core]
 	excludesfile = /Users/aditya.misra/.gitignore_global
 	pager = diff-so-fancy | less --tabs=4 -RFX
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Users/aditya.misra/Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 [interactive]
 	diffFilter = diff-so-fancy --patch
 [color]
