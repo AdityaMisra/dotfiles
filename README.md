@@ -1,6 +1,8 @@
 ```
 brew install diff-so-fancy
 brew install jq
+brew install bat
+brew install lsd
 ```
 
 # dotfiles
@@ -27,9 +29,10 @@ A bash prompt that displays information about the current git repository. In par
 
 - https://github.com/sharkdp/bat
 - https://github.com/muesli/duf
-- https://github.com/ogham/exa
+- https://github.com/lsd-rs/lsd
 - https://github.com/so-fancy/diff-so-fancy
 - https://fig.io/
+- https://www.warp.dev/
 - https://stedolan.github.io/jq/
 
 - https://twitter.com/amilajack/status/1479328649820000256?s=21
