@@ -78,34 +78,27 @@ esac
 
 ##################################### Aliases Start #####################################
 source ~/.qcrc
+
 alias ipython='ipython --pprint --pdb'
 alias gd='git diff'
 alias gb=git_branch_more
 alias gs='git status'
 alias rm="rm -i"
 
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    #alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
 
-alias grep='grep --color=auto'
+alias grep='grep --color=always'
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias l='ls -alFhG'
-alias ll='ls -alFhG'
-export LSCOLORS=dxfxcxdxbxegedabagacad
+alias l='ls -alFhG --color=always'
+alias ll='ls -alFhG --color=always'
+export LSCOLORS=GxFxCxDxBxegedabagaced
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -113,26 +106,13 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
+# ~/.bash_aliases, instead of addi ng them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+# if [ -f ~/.bash_aliases ]; then
+#     . ~/.bash_aliases
+# fi
 
 ##################################### Aliases End #####################################
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-
 function git_branch_more(){
     for k in `git branch|perl -pe s/^..//`;
     do
@@ -146,29 +126,7 @@ function git_branch_more(){
     done|sort
 }
 
-GIT_PROMPT_ONLY_IN_REPO=1
-
-# GIT_PROMPT_FETCH_REMOTE_STATUS=0   # uncomment to avoid fetching remote status
-
-# GIT_PROMPT_SHOW_UPSTREAM=1 # uncomment to show upstream tracking branch
-# GIT_PROMPT_SHOW_UNTRACKED_FILES=all # can be no, normal or all; determines counting of untracked files
-
-# GIT_PROMPT_SHOW_CHANGED_FILES_COUNT=0 # uncomment to avoid printing the number of changed files
-
-# GIT_PROMPT_STATUS_COMMAND=gitstatus_pre-1.7.10.sh # uncomment to support Git older than 1.7.10
-
-# GIT_PROMPT_START=...    # uncomment for custom prompt start sequence
-# GIT_PROMPT_END=...      # uncomment for custom prompt end sequence
-
-# as last entry source the gitprompt script
-# GIT_PROMPT_THEME=Custom # use custom theme specified in file GIT_PROMPT_THEME_FILE (default ~/.git-prompt-colors.sh)
-# GIT_PROMPT_THEME_FILE=~/.git-prompt-colors.sh
-# GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
-source /usr/local/share/gitprompt.sh
-
-
 # configuring golang
-## export GOPATH=$HOME/go # dont forget to change your path correctly!
-# export GOROOT=/usr/local/opt/go/libexec
-## export PATH=$PATH:$GOPATH/bin
-# export PATH=$PATH:$GOROOT/bin
+# Use `go env` to get these values
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
