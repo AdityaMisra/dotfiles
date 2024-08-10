@@ -83,7 +83,7 @@ alias ipython='ipython --pprint --pdb'
 alias gd='git diff'
 alias gb=git_branch_more
 alias gs='git status'
-alias rm="rm -i"
+alias rm='rm -i'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -94,25 +94,26 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias grep='grep --color=always'
+alias grep='grep --color=auto'
+alias l="ls -alFhG --color=always"
+alias ll="ls -alFhG --color=always"
 
-alias l='ls -alFhG --color=always'
-alias ll='ls -alFhG --color=always'
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+# alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of addi ng them here directly.
+# ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 # if [ -f ~/.bash_aliases ]; then
 #     . ~/.bash_aliases
 # fi
 
 ##################################### Aliases End #####################################
+
 function git_branch_more(){
     for k in `git branch|perl -pe s/^..//`;
     do
