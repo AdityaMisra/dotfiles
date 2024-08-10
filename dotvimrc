@@ -1,8 +1,8 @@
-call plug#begin()
+#call plug#begin()
 
-Plug 'liuchengxu/space-vim-dark'
+#Plug 'liuchengxu/space-vim-dark'
 
-call plug#end()
+#call plug#end()
 
 " Configuration file for vim
 set modelines=0         " CVE-2007-2438
@@ -62,6 +62,6 @@ set noerrorbells         " don't beep
 
 set background=dark
 
-colorscheme space-vim-dark        " awesome colorscheme
+#colorscheme space-vim-dark        " awesome colorscheme
 
 syntax enable              " enable syntax highlighting
