@@ -1,5 +1,6 @@
 ```
 brew install diff-so-fancy
+brew install jq
 ```
 
 # dotfiles
