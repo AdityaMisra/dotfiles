@@ -1,0 +1,8 @@
+*~
+.vscode
+.idea
+.cache
+.vscode/*
+.DS_Store
+coverage.html
+node_modules
