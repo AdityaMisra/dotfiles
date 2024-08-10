@@ -12,8 +12,8 @@ brew install htop
 
 A bash prompt that displays information about the current git repository. In particular the branch name, difference with remote branch, number of files staged, changed, etc.
 
-- Flow -> https://dev.to/kumareth/a-beginner-s-guide-for-setting-up-autocomplete-on-ohmyzsh-hyper-with-plugins-themes-47f2 ✔️✔️✔️✔️
-- Use https://github.com/romkatv/powerlevel10k
+- Follow ✔️✔️ https://dev.to/kumareth/a-beginner-s-guide-for-setting-up-autocomplete-on-ohmyzsh-hyper-with-plugins-themes-47f2 
+- User Powerlevel10k ✔️✔ https://github.com/romkatv/powerlevel10k
 
 - https://github.com/magicmonty/bash-git-prompt
 
