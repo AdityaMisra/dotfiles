@@ -3,6 +3,7 @@ brew install diff-so-fancy
 brew install jq
 brew install bat
 brew install lsd
+brew install duf
 brew install htop
 ```
 
