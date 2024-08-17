@@ -34,6 +34,9 @@ A bash prompt that displays information about the current git repository. In par
 - https://github.com/sharkdp/bat
 - https://github.com/muesli/duf
 - https://github.com/lsd-rs/lsd
+
+- https://www.jetbrains.com/help/idea/2024.2/working-with-the-ide-features-from-command-line.html#standalone
+- https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line
 - https://github.com/so-fancy/diff-so-fancy
 - https://fig.io/
 - https://www.warp.dev/
