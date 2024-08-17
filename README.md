@@ -12,8 +12,8 @@ brew install htop
 
 A bash prompt that displays information about the current git repository. In particular the branch name, difference with remote branch, number of files staged, changed, etc.
 
-- Follow ✔️✔️ https://dev.to/kumareth/a-beginner-s-guide-for-setting-up-autocomplete-on-ohmyzsh-hyper-with-plugins-themes-47f2 
-- User Powerlevel10k ✔️✔ https://github.com/romkatv/powerlevel10k
+- Follow steps from - `https://dev.to/kumareth/a-beginner-s-guide-for-setting-up-autocomplete-on-ohmyzsh-hyper-with-plugins-themes-47f2`
+- Use Powerlevel10k - `https://github.com/romkatv/powerlevel10k`
 
 - https://github.com/magicmonty/bash-git-prompt
 
@@ -28,18 +28,21 @@ A bash prompt that displays information about the current git repository. In par
 - https://github.com/Powerlevel9k/powerlevel9k/wiki/Show-Off-Your-Config
 
 - https://github.com/junegunn/vim-plug
-
 - https://github.com/Valloric/YouCompleteMe
 
-- https://github.com/sharkdp/bat
-- https://github.com/muesli/duf
-- https://github.com/lsd-rs/lsd
+| Link |
+| ------- |
+| [Open IDEA from CLI](https://www.jetbrains.com/help/idea/2024.2/working-with-the-ide-features-from-command-line.html#standalone) |
+| [Open VS Code from CLI](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line) |
 
-- https://www.jetbrains.com/help/idea/2024.2/working-with-the-ide-features-from-command-line.html#standalone
-- https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line
-- https://github.com/so-fancy/diff-so-fancy
-- https://fig.io/
-- https://www.warp.dev/
-- https://stedolan.github.io/jq/
-
-- https://twitter.com/amilajack/status/1479328649820000256?s=21
+| CLI Tools |
+| ------- |
+|https://twitter.com/amilajack/status/1479328649820000256|
+|https://github.com/so-fancy/diff-so-fancy|
+|https://github.com/sharkdp/bat|
+|https://github.com/muesli/duf|
+|https://github.com/lsd-rs/lsd|
+|?? https://fig.io/|
+|https://www.warp.dev/|
+|https://stedolan.github.io/jq/|
+|https://fig.io/|
