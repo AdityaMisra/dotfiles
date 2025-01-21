@@ -30,6 +30,8 @@ A bash prompt that displays information about the current git repository. In par
 - https://github.com/junegunn/vim-plug
 - https://github.com/Valloric/YouCompleteMe
 
+- https://eugeneyan.com/writing/mac-setup/
+
 | Open through CLI |
 | ------- |
 | [Open IDEA from CLI](https://www.jetbrains.com/help/idea/2024.2/working-with-the-ide-features-from-command-line.html#standalone) |
