@@ -31,6 +31,7 @@ A bash prompt that displays information about the current git repository. In par
 - https://github.com/Valloric/YouCompleteMe
 
 - https://eugeneyan.com/writing/mac-setup/
+- Install Raycast and setup the hotkeys
 
 | Open through CLI |
 | ------- |
