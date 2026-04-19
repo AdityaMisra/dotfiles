@@ -1,0 +1,64 @@
+matches:
+  - trigger: ":date"
+    replace: "{{date}}"
+    vars:
+      - name: date
+        type: date
+        params:
+          format: "%Y-%m-%d"
+
+  - trigger: ":now"
+    replace: "{{now}}"
+    vars:
+      - name: now
+        type: date
+        params:
+          format: "%Y-%m-%d %H:%M"
+
+  - trigger: ":iso"
+    replace: "{{iso}}"
+    vars:
+      - name: iso
+        type: date
+        params:
+          format: "%Y-%m-%dT%H:%M:%S%z"
+
+  - trigger: ":email"
+    replace: "aditya.misra@example.com"
+
+  - trigger: ":sig"
+    replace: |
+      Thanks,
+      Aditya
+
+  - trigger: ":todo"
+    replace: "- [ ] "
+
+  - trigger: ":done"
+    replace: "- [x] "
+
+  - trigger: ":shrug"
+    replace: "\u00af\\_(\u30c4)_/\u00af"
+
+  - trigger: ":table"
+    replace: |
+      | col1 | col2 | col3 |
+      | ---- | ---- | ---- |
+      |      |      |      |
+
+  - trigger: ":mdcode"
+    replace: |
+      ```$|$
+      ```
+
+  - trigger: ":pyhead"
+    replace: |
+      #!/usr/bin/env python3
+      """$|$"""
+
+      from __future__ import annotations
+
+  - trigger: ":bashhead"
+    replace: |
+      #!/usr/bin/env bash
+      set -euo pipefail

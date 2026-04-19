@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# usage: clip
+# Fuzzy-search Maccy's clipboard history; selected entry is copied back to
+# the system clipboard. Falls back to the live clipboard if Maccy DB
+# is unavailable.
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+have fzf || die "fzf required"
+
+MACCY_DB="$HOME/Library/Group Containers/group.org.p0deje.Maccy/Library/Application Support/Maccy/Storage.sqlite"
+
+if [[ -f "$MACCY_DB" ]] && have sqlite3; then
+  selection="$(sqlite3 "$MACCY_DB" \
+    "SELECT replace(value,char(10),' \u23ce ') FROM HistoryItemContent
+       WHERE type = 'public.utf8-plain-text'
+       ORDER BY rowid DESC
+       LIMIT 200" \
+    | fzf --prompt="clip > " --height=40% --reverse)"
+  [[ -n "$selection" ]] && printf '%s' "${selection//\u23ce/$'\n'}" | pbcopy
+else
+  warn "Maccy DB not found; printing current clipboard"
+  pbpaste
+fi

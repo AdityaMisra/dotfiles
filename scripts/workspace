@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# usage: workspace <name> | --list
+#
+# Reads ~/.workspaces.toml and opens the named workspace. Each workspace
+# may declare:
+#   path     = "/abs/path/to/repo"  (required)
+#   editor   = "cursor"             (default $EDITOR or cursor)
+#   urls     = ["https://..."]      (opened in default browser)
+#   terminal = true                 (open Ghostty in path)
+#
+# Example ~/.workspaces.toml:
+#   [dotfiles]
+#   path = "/Users/aditya.misra/Documents/area51/dotfiles"
+#   editor = "cursor"
+#   urls = ["https://github.com/AdityaMisra/dotfiles"]
+#   terminal = true
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+CONFIG="${WORKSPACES_FILE:-$HOME/.workspaces.toml}"
+[[ -f "$CONFIG" ]] || die "no $CONFIG; see --help for format"
+
+if [[ "${1:-}" == "--list" || $# -eq 0 ]]; then
+  awk '/^\[/{gsub(/[][]/,"",$1); print $1}' "$CONFIG"
+  exit 0
+fi
+
+name="$1"
+
+# Minimal TOML reader: extract values inside [name] section.
+section_value() {
+  local key="$1"
+  awk -v sec="[$name]" -v key="$key" '
+    $0 == sec { in_sec = 1; next }
+    /^\[/     { in_sec = 0 }
+    in_sec && $1 == key {
+      sub(/^[^=]*=[[:space:]]*/, "")
+      print
+      exit
+    }
+  ' "$CONFIG"
+}
+
+path="$(section_value path | tr -d '"')"
+[[ -n "$path" ]] || die "workspace '$name' missing 'path'"
+[[ -d "$path" ]] || die "path does not exist: $path"
+
+editor="$(section_value editor | tr -d '"')"
+editor="${editor:-${EDITOR:-cursor}}"
+
+terminal="$(section_value terminal | tr -d ' ')"
+
+log "opening workspace: $name ($path)"
+
+if have "$editor"; then
+  "$editor" "$path" >/dev/null 2>&1 &
+else
+  warn "editor '$editor' not found"
+fi
+
+if [[ "$terminal" == "true" ]]; then
+  if have ghostty; then
+    open -na Ghostty --args --working-directory="$path" >/dev/null 2>&1 || \
+      open -a Ghostty "$path"
+  else
+    open -a Terminal "$path"
+  fi
+fi
+
+urls="$(section_value urls)"
+if [[ -n "$urls" ]]; then
+  echo "$urls" \
+    | tr ',' '\n' \
+    | sed 's/[][" ]//g' \
+    | grep -E '^https?://' \
+    | while read -r url; do open "$url"; done
+fi

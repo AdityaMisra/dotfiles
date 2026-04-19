@@ -1,0 +1,12 @@
+# Acme-only tools. Applied on top of the base Brewfile by
+# install/08-host-overlay.sh when LocalHostName maps to "work-laptop".
+
+brew "vault"          # HashiCorp Vault CLI (talks to vault.example.com)
+brew "opa"            # Open Policy Agent
+brew "grpcui"         # interactive gRPC UI
+brew "cookiecutter"   # project scaffolder
+brew "terraform"
+brew "tfenv"          # multiple terraform versions
+brew "awscli"
+brew "kubectl"
+brew "helm"

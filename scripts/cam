@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# usage: cam [on|off|toggle]   (default: toggle)
+# Toggles camera in Zoom or Google Meet (Chrome).
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+run_applescript toggle-camera.applescript "${1:-toggle}"
