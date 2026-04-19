@@ -1,0 +1,19 @@
+# Installed by install/04-stow-dotfiles.sh via:
+#   xargs -L1 cursor --install-extension < extensions.txt
+ms-python.python
+ms-python.vscode-pylance
+charliermarsh.ruff
+golang.go
+rust-lang.rust-analyzer
+hashicorp.terraform
+redhat.vscode-yaml
+tamasfe.even-better-toml
+esbenp.prettier-vscode
+dbaeumer.vscode-eslint
+streetsidesoftware.code-spell-checker
+PKief.material-icon-theme
+eamodio.gitlens
+mhutchie.git-graph
+GitHub.vscode-pull-request-github
+yzhang.markdown-all-in-one
+DavidAnson.vscode-markdownlint

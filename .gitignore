@@ -1,0 +1,18 @@
+# Local overrides (never committed)
+*.local
+hosts/*/secret*
+hosts/*/*.local
+
+# macOS
+.DS_Store
+
+# Editor cruft
+*.swp
+*~
+
+# Stowed shell artifacts
+dotfiles/zsh/.zsh_history
+dotfiles/zsh/.zsh_sessions/
+
+# Bootstrap log output
+*.log

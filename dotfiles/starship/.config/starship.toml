@@ -1,0 +1,74 @@
+# starship.toml — replaces Powerlevel9k.
+# Custom segment carries forward the random nerd-font glyph from
+# dotzshrc_mac (lines 41-50) via the `custom.glyph` block.
+
+add_newline = true
+command_timeout = 1500
+
+format = """
+$directory\
+$git_branch$git_status\
+$python$nodejs$golang$java\
+$cmd_duration\
+$line_break\
+$custom\
+$character"""
+
+[character]
+success_symbol = "[\u276f](bold green)"
+error_symbol   = "[\u276f](bold red)"
+
+[directory]
+truncation_length = 4
+truncate_to_repo  = true
+style             = "bold cyan"
+
+[git_branch]
+symbol = " \uf1d3 "
+style  = "bold purple"
+
+[git_status]
+ahead     = "\u2191${count}"
+behind    = "\u2193${count}"
+diverged  = "\u2195"
+modified  = "!${count}"
+staged    = "+${count}"
+untracked = "?${count}"
+stashed   = "$"
+style     = "bold yellow"
+
+[cmd_duration]
+min_time          = 1500
+format            = " took [$duration]($style) "
+style             = "yellow"
+show_notifications = false
+
+[python]
+symbol = "\ue235 "
+style  = "bold green"
+
+[nodejs]
+symbol = "\ue718 "
+style  = "bold green"
+
+[golang]
+symbol = "\ue627 "
+style  = "bold cyan"
+
+[java]
+symbol = "\ue256 "
+style  = "bold red"
+
+# Random nerd-font glyph (port of POWERLEVEL9K_CUSTOM_PROMPT from
+# dotzshrc_mac). Picks a random index per prompt render via shell.
+[custom.glyph]
+description = "Random nerd-font glyph (carried over from p9k era)"
+when        = "true"
+shell       = ["sh", "-c"]
+command     = """
+glyphs='\ue62e \ue62d \ue764 \ue780 \uf2dc \uf2cd \uf121 \uf286'
+set -- $glyphs
+n=$(awk -v max=$# 'BEGIN{srand(); print int(rand()*max)+1}')
+eval "printf '%s' \\\"\\$$n\\\""
+"""
+format = "[$output](red) "

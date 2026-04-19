@@ -1,0 +1,28 @@
+font-family = "JetBrainsMono Nerd Font"
+font-size = 14
+
+theme = "GruvboxDarkHard"
+
+background-opacity = 0.95
+background-blur-radius = 20
+
+window-padding-x = 8
+window-padding-y = 8
+window-decoration = true
+window-save-state = always
+
+cursor-style = block
+cursor-style-blink = false
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
+
+copy-on-select = clipboard
+mouse-hide-while-typing = true
+
+confirm-close-surface = false
+quit-after-last-window-closed = false
+
+keybind = super+shift+enter=new_window
+keybind = super+t=new_tab
+keybind = super+d=new_split:right
+keybind = super+shift+d=new_split:down

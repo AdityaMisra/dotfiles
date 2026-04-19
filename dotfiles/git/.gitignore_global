@@ -1,0 +1,31 @@
+# Editor & IDE cruft
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+node_modules/
+coverage.html
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.secrets/
