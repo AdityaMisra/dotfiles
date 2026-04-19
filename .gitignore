@@ -3,6 +3,12 @@
 /*.local
 /.zshrc.local
 /.gitconfig.local
+
+# Per-machine private overlays (real internal config, vault URLs, etc).
+# Put employer-specific Brewfile.work / install.sh / zshrc.local in
+# hosts/<alias>.local/ instead of hosts/<alias>/ to keep it out of git.
+hosts/*.local/
+hosts/_map.local.sh
 hosts/*/secret*
 
 # macOS

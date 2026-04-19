@@ -6,9 +6,18 @@ source "$(dirname "$0")/_lib.sh"
 log "host overlay"
 
 ALIAS="$(bash "$REPO_ROOT/hosts/_map.sh")"
-DIR="$REPO_ROOT/hosts/$ALIAS"
 
-info "alias: $ALIAS"
+# Prefer the gitignored private overlay if it exists; fall back to the
+# generic public one. This is how real employer-internal configuration
+# (Vault URLs, private package indexes, proprietary CLIs) stays out of
+# the public repo.
+if [[ -d "$REPO_ROOT/hosts/${ALIAS}.local" ]]; then
+  DIR="$REPO_ROOT/hosts/${ALIAS}.local"
+  info "alias: $ALIAS (using private overlay ${ALIAS}.local)"
+else
+  DIR="$REPO_ROOT/hosts/$ALIAS"
+  info "alias: $ALIAS"
+fi
 
 if [[ ! -d "$DIR" ]]; then
   info "no overlay directory for $ALIAS \u2014 skipping"

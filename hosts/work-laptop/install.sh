@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Acme laptop overlay. Sourced by install/08-host-overlay.sh.
+# Generic "work laptop" overlay shipped with the public repo.
+# Sourced by install/08-host-overlay.sh.
 # Idempotent: every step is guarded by an "already-present" check.
+#
+# Anything employer-specific (private package indexes, internal CLIs)
+# belongs in hosts/<alias>.local/install.sh which is gitignored.
 set -euo pipefail
 
 log()  { printf '\033[1;34m::\033[0m %s\n' "$*"; }
@@ -37,18 +41,6 @@ for tool in maven gradle; do
   fi
 done
 
-# --- internal_aws_tools (via pipx, NOT sudo pip3) --------------------------------
-if command -v pipx >/dev/null 2>&1; then
-  if pipx list --short 2>/dev/null | grep -q '^internal-aws-tools\|^internal_aws_tools'; then
-    log "internal_aws_tools already installed via pipx"
-  else
-    log "installing internal_aws_tools via pipx"
-    pipx install internal_aws_tools || warn "pipx install internal_aws_tools failed (private index? check ~/.config/pip/pip.conf)"
-  fi
-else
-  warn "pipx not on PATH; install/02-brew-bundle.sh should provide it"
-fi
-
 # --- ed25519 SSH key -------------------------------------------------------
 KEY="$HOME/.ssh/id_ed25519"
 if [[ -f "$KEY" ]]; then
@@ -58,7 +50,7 @@ else
   mkdir -p "$HOME/.ssh"
   chmod 700 "$HOME/.ssh"
   ssh-keygen -t ed25519 -f "$KEY" -N "" -C "$USER@$(scutil --get LocalHostName 2>/dev/null || hostname)"
-  warn "Add ${KEY}.pub to GitHub / Vault as needed"
+  warn "Add ${KEY}.pub to GitHub / your identity provider as needed"
 fi
 
 log "work-laptop overlay done"

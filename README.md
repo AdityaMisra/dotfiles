@@ -115,6 +115,26 @@ mkdir -p hosts/myalias
 # add a case to hosts/_map.sh mapping "$host" -> "myalias"
 ```
 
+### Keeping employer-internal config out of git
+
+This repo is public, so `hosts/<alias>/` ships only generic / open-source
+tools. Anything that would leak internal infrastructure -- Vault URLs,
+private package indexes, proprietary CLIs, real LocalHostNames -- belongs
+in a sibling directory:
+
+```
+hosts/work-laptop/         # public, committed (generic)
+hosts/work-laptop.local/   # gitignored, your real internal config
+hosts/_map.local.sh        # gitignored, real LocalHostName -> alias mapping
+```
+
+`install/08-host-overlay.sh` prefers `hosts/<alias>.local/` when it exists,
+so the private overlay always wins. `_map.sh` exec's `_map.local.sh` first
+when present. Both `*.local/` and `_map.local.sh` are in `.gitignore`.
+
+Never commit a real internal hostname, internal hostname pattern, or the
+name of an internal-only package to `hosts/<alias>/` or `_map.sh`.
+
 ## Adding a new automation
 
 - New CLI script: drop it in `scripts/`, `chmod +x`, then symlink into the

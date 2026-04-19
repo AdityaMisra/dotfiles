@@ -1,7 +1,11 @@
-# Acme-only tools. Applied on top of the base Brewfile by
-# install/08-host-overlay.sh when LocalHostName maps to "work-laptop".
+# Generic "work laptop" overlay shipped with the public repo.
+# Applied on top of the base Brewfile by install/08-host-overlay.sh
+# when LocalHostName maps to "work-laptop".
+#
+# Anything employer-specific (internal CLIs, proprietary taps) belongs in
+# hosts/<alias>.local/Brewfile.work which is gitignored.
 
-brew "vault"          # HashiCorp Vault CLI (talks to vault.example.com)
+brew "vault"          # HashiCorp Vault CLI
 brew "opa"            # Open Policy Agent
 brew "grpcui"         # interactive gRPC UI
 brew "cookiecutter"   # project scaffolder

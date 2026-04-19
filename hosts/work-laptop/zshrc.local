@@ -1,9 +1,10 @@
-# Sourced by ~/.zshrc on the Acme laptop only.
+# Example overlay shipped with the public repo.
+# Real per-employer config (internal Vault addresses, private rc files,
+# proprietary CLIs) belongs in hosts/<alias>.local/ which is gitignored.
+#
 # Installed by install/08-host-overlay.sh -> ~/.zshrc.local
 
-export VAULT_ADDR="https://vault.example.com:8200"
+# export VAULT_ADDR="https://vault.example.com:8200"
+# [[ -f "$HOME/.work-rc" ]] && source "$HOME/.work-rc"
 
-[[ -f "$HOME/.workrc" ]] && source "$HOME/.workrc"
-
-# Convenience for `internal_aws_tools`.
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
