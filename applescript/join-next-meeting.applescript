@@ -3,18 +3,30 @@
 -- within the next 60 minutes (or already in progress). Empty string if none.
 on run
 	set lookahead to 60 * minutes
-	set now to current date
-	set horizon to now + lookahead
+	set graceMinutes to 5 * minutes
+	set rightNow to current date
+	set windowStart to rightNow - graceMinutes
+	set horizon to rightNow + lookahead
+
+	set foundEvent to missing value
+	set foundStart to missing value
 
 	tell application "Calendar"
-		set foundEvent to missing value
 		repeat with cal in calendars
-			set evts to (every event of cal whose start date \u2265 (now - 5 * minutes) and start date \u2264 horizon)
+			set evts to events of cal
 			repeat with e in evts
-				if foundEvent is missing value then
-					set foundEvent to e
-				else if (start date of e) < (start date of foundEvent) then
-					set foundEvent to e
+				try
+					set s to start date of e
+				on error
+					set s to missing value
+				end try
+				if s is not missing value then
+					if s comes after windowStart and s comes before horizon then
+						if foundStart is missing value or s comes before foundStart then
+							set foundEvent to contents of e
+							set foundStart to s
+						end if
+					end if
 				end if
 			end repeat
 		end repeat
@@ -32,7 +44,7 @@ on run
 			try
 				set blob to (location of foundEvent) & " " & (description of foundEvent)
 			end try
-			set theURL to extractURL(blob)
+			set theURL to my extractURL(blob)
 		end if
 	end tell
 

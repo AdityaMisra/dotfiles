@@ -18,7 +18,11 @@ fi
 if [[ -f "$DIR/Brewfile.work" ]]; then
   info "applying $DIR/Brewfile.work"
   if dry_run; then
-    brew bundle check --file="$DIR/Brewfile.work" --verbose || true
+    if have brew; then
+      brew bundle check --file="$DIR/Brewfile.work" --verbose 2>&1 | sed 's/^/    /' || true
+    else
+      info "[dry-run] brew not yet installed; would run brew bundle --file=$DIR/Brewfile.work"
+    fi
   else
     brew bundle --file="$DIR/Brewfile.work"
   fi

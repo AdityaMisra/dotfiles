@@ -5,7 +5,9 @@ source "$(dirname "$0")/_lib.sh"
 
 log "stow dotfiles"
 
-have stow || die "stow not found; run install/02-brew-bundle.sh first"
+if ! need stow install/02-brew-bundle.sh; then
+  exit 0
+fi
 
 cd "$REPO_ROOT/dotfiles"
 

@@ -3,12 +3,15 @@ source "$(dirname "$0")/_lib.sh"
 
 log "brew bundle (base Brewfile)"
 
-have brew || die "brew not found; install/01-homebrew.sh must succeed first"
+if ! need brew install/01-homebrew.sh; then
+  exit 0
+fi
 
 cd "$REPO_ROOT"
 
 if dry_run; then
-  brew bundle check --file=Brewfile --verbose || true
+  info "checking Brewfile against installed packages..."
+  brew bundle check --file=Brewfile --verbose 2>&1 | sed 's/^/    /' || true
   exit 0
 fi
 
