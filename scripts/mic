@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# usage: mic [on|off|toggle]   (default: toggle)
+# Mutes/unmutes the active call in Zoom or Google Meet (Chrome).
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+run_applescript mute-mic.applescript "${1:-toggle}"

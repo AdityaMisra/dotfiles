@@ -1,0 +1,9 @@
+# Sourced by ~/.zshrc on the Acme laptop only.
+# Installed by install/08-host-overlay.sh -> ~/.zshrc.local
+
+export VAULT_ADDR="https://vault.example.com:8200"
+
+[[ -f "$HOME/.workrc" ]] && source "$HOME/.workrc"
+
+# Convenience for `internal_aws_tools`.
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"

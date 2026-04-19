@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# usage: gwt add <branch> [base]    create worktree at ../<repo>-<branch>
+#        gwt switch <branch>        cd into existing worktree (use as `cd $(gwt switch ...)`)
+#        gwt rm <branch>            remove worktree + delete local branch
+#        gwt list                   list worktrees
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+cmd="${1:-list}"
+shift || true
+
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "not a git repo"
+
+repo_root="$(git rev-parse --show-toplevel)"
+repo_name="$(basename "$repo_root")"
+parent="$(dirname "$repo_root")"
+
+case "$cmd" in
+  add)
+    branch="${1:?branch name required}"
+    base="${2:-$(git symbolic-ref --short HEAD)}"
+    target="$parent/${repo_name}-${branch//\//-}"
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+      git worktree add "$target" "$branch"
+    else
+      git worktree add -b "$branch" "$target" "$base"
+    fi
+    log "worktree at $target"
+    ;;
+  switch)
+    branch="${1:?branch name required}"
+    target="$(git worktree list --porcelain | awk -v b="$branch" '
+      /^worktree / { wt = $2 }
+      /^branch refs\/heads\// { gsub(/refs\/heads\//, "", $2); if ($2 == b) { print wt; exit } }
+    ')"
+    [[ -n "$target" ]] || die "no worktree for branch $branch"
+    echo "$target"
+    ;;
+  rm)
+    branch="${1:?branch name required}"
+    target="$parent/${repo_name}-${branch//\//-}"
+    git worktree remove "$target"
+    git branch -d "$branch" || warn "branch '$branch' not deleted (unmerged?)"
+    ;;
+  list|ls)
+    git worktree list
+    ;;
+  *) usage; exit 2 ;;
+esac

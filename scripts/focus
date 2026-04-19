@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# usage: focus on|off|toggle
+#
+# Toggles a "Focus" mode: hides the Dock, snoozes Slack notifications,
+# and (best-effort) toggles the macOS Do Not Disturb Focus via a Shortcut
+# named "Focus On" / "Focus Off" you create once in Shortcuts.app.
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+state="${1:-toggle}"
+
+set_focus() {
+  local mode="$1"
+  if have shortcuts; then
+    if [[ "$mode" == on ]]; then
+      shortcuts run "Focus On"  >/dev/null 2>&1 || warn "create a 'Focus On' Shortcut"
+    else
+      shortcuts run "Focus Off" >/dev/null 2>&1 || warn "create a 'Focus Off' Shortcut"
+    fi
+  else
+    warn "shortcuts CLI not found (macOS 12+ required)"
+  fi
+}
+
+dock_autohide() {
+  defaults write com.apple.dock autohide -bool "$1"
+  killall Dock >/dev/null 2>&1 || true
+}
+
+current_state_file="${TMPDIR:-/tmp}/focus.state"
+case "$state" in
+  on)
+    set_focus on
+    dock_autohide true
+    run_applescript slack-snooze.applescript on >/dev/null 2>&1 || true
+    echo on > "$current_state_file"
+    log "focus ON"
+    ;;
+  off)
+    set_focus off
+    dock_autohide false
+    run_applescript slack-snooze.applescript off >/dev/null 2>&1 || true
+    echo off > "$current_state_file"
+    log "focus OFF"
+    ;;
+  toggle)
+    if [[ -f "$current_state_file" && "$(cat "$current_state_file")" == on ]]; then
+      exec "$0" off
+    else
+      exec "$0" on
+    fi
+    ;;
+  *)
+    usage; exit 2 ;;
+esac

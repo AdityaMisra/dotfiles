@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# usage: backup [destination]
+#
+# rsyncs the home directory to a destination (default
+# /Volumes/Backup/<hostname>). Excludes obviously-cacheable + secret paths.
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+dest="${1:-/Volumes/Backup/$(scutil --get LocalHostName 2>/dev/null || hostname)}"
+
+if [[ ! -d "$(dirname "$dest")" ]]; then
+  die "$(dirname "$dest") not mounted"
+fi
+mkdir -p "$dest"
+
+EXCLUDES=(
+  "Library/Caches"
+  "Library/Application Support/Cursor/User/workspaceStorage"
+  "Library/Application Support/Code/User/workspaceStorage"
+  "Library/Containers/com.docker.docker/Data"
+  ".cache"
+  ".npm"
+  ".gradle/caches"
+  ".m2/repository"
+  ".Trash"
+  "Downloads"
+  "node_modules"
+  ".venv"
+  "__pycache__"
+)
+
+args=( -aHAX --delete --human-readable --info=stats2 )
+for ex in "${EXCLUDES[@]}"; do args+=( --exclude="$ex" ); done
+
+log "rsync \$HOME -> $dest"
+rsync "${args[@]}" "$HOME/" "$dest/"
+log "done"

@@ -1,7 +1,9 @@
-# Local overrides (never committed)
-*.local
+# Local overrides (root + hosts) — never committed.
+# Use anchored patterns so we don't accidentally match dotfiles/bin/.local/.
+/*.local
+/.zshrc.local
+/.gitconfig.local
 hosts/*/secret*
-hosts/*/*.local
 
 # macOS
 .DS_Store
@@ -15,4 +17,5 @@ dotfiles/zsh/.zsh_history
 dotfiles/zsh/.zsh_sessions/
 
 # Bootstrap log output
+.logs/
 *.log

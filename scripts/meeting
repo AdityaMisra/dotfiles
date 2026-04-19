@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# usage: meeting
+#
+# Asks Calendar.app for the next event in the next 60 minutes and opens any
+# Zoom/Meet/Teams/Webex link found in its location/notes/url fields.
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+url="$(run_applescript join-next-meeting.applescript)"
+
+if [[ -z "$url" || "$url" == "missing value" ]]; then
+  die "no meeting link in the next 60 minutes"
+fi
+
+log "joining: $url"
+open "$url"

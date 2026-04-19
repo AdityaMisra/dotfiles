@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# usage: cleanup [--no-docker] [--no-trash]
+# Aggregates routine maintenance: brew, npm, pip, docker, trash.
+# end
+source "$(dirname "$0")/_lib.sh"
+handle_help "$@"
+
+skip_docker=0; skip_trash=0
+for a in "$@"; do
+  case "$a" in
+    --no-docker) skip_docker=1 ;;
+    --no-trash)  skip_trash=1 ;;
+  esac
+done
+
+if have brew; then
+  log "brew cleanup + autoremove"
+  brew update >/dev/null
+  brew upgrade
+  brew cleanup -s
+  brew autoremove
+fi
+
+if have npm; then
+  log "npm cache clean"
+  npm cache clean --force >/dev/null 2>&1 || true
+fi
+
+if have pipx; then
+  log "pipx upgrade-all"
+  pipx upgrade-all >/dev/null 2>&1 || true
+fi
+
+if (( ! skip_docker )) && have docker; then
+  if docker info >/dev/null 2>&1; then
+    log "docker system prune"
+    docker system prune -f
+    docker builder prune -f --filter 'until=168h'
+  fi
+fi
+
+if (( ! skip_trash )); then
+  log "empty trash"
+  osascript -e 'tell application "Finder" to empty trash' >/dev/null 2>&1 || true
+fi
+
+log "done"
