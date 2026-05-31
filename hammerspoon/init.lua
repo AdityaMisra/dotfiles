@@ -19,4 +19,4 @@ require("modules.launchers")
 require("modules.mediakeys")
 require("modules.reload")
 
-hs.alert.show("Hammerspoon \u2713")
+hs.alert.show("Hammerspoon OK")
