@@ -1,5 +1,7 @@
 # dotfiles
 
+- INSTALL `btop`
+
 Portable, idempotent macOS bootstrap. Clone, run `./bootstrap.sh`, get a
 working setup. Re-run any time to update; per-machine differences live in
 `hosts/<alias>/`.
