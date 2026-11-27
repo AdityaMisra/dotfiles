@@ -13,3 +13,10 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_SPACE      # prefix a command with a space to keep it out of history
 setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY            # !! expansions are shown before running
+
+# Keep obvious secrets out of ~/.zsh_history (atuin applies a similar filter to its DB).
+# The command still runs; it just isn't saved. Prefix any command with a space to skip saving.
+zshaddhistory() {
+  setopt localoptions extendedglob
+  [[ $1 != *(#i)(token|secret|passw(or)#d|api[_-]#key|private[_-]#key)*=* ]]
+}

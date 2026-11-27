@@ -9,10 +9,14 @@ fi
 
 path=("$HOME/.local/bin" "$HOME/bin" $path)
 
-# Java: SDKMAN if present, otherwise Homebrew openjdk@21.
+# Java & co: SDKMAN if present, otherwise Homebrew openjdk@21.
+# Fast path: put each SDKMAN candidate's "current" version on PATH and set JAVA_HOME
+# directly, and load the full SDKMAN init (~20ms) only when you first type `sdk`.
 if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
   export SDKMAN_DIR="$HOME/.sdkman"
-  source "$SDKMAN_DIR/bin/sdkman-init.sh"
+  for _c in "$SDKMAN_DIR"/candidates/*/current(N); do path=("$_c/bin" $path); done; unset _c
+  [[ -d "$SDKMAN_DIR/candidates/java/current" ]] && export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"
+  sdk() { unfunction sdk; source "$SDKMAN_DIR/bin/sdkman-init.sh"; sdk "$@"; }
 elif [[ -d "$HOMEBREW_PREFIX/opt/openjdk@21/bin" ]]; then
   path=("$HOMEBREW_PREFIX/opt/openjdk@21/bin" $path)
 fi
@@ -27,14 +31,16 @@ _vsc="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH
 
 # _cached_init <name> <command...>: source a tool's generated shell setup from a cache
-# file, regenerating it only when the tool's binary is newer (i.e. after an upgrade).
-# Saves ~100ms per new shell versus running `tool init zsh` every time.
+# file instead of running `tool init zsh` on every shell (saves ~100ms).
+# The cache records the tool's resolved binary path (Homebrew: .../Cellar/<tool>/<version>/...)
+# and the exact command, so it's regenerated after an upgrade or when the flags change.
 _cached_init() {
   local name=$1; shift
   local bin=${commands[$1]} cache="$XDG_CACHE_HOME/zsh/init-$name.zsh"
   [[ -n $bin ]] || return 0
-  if [[ ! -s $cache || $bin -nt $cache ]]; then
-    mkdir -p "${cache:h}" && "$@" >| "$cache" 2>/dev/null
+  local stamp="# _cached_init: ${bin:A} :: $*"
+  if [[ ! -s $cache || "$(head -n1 "$cache")" != "$stamp" ]]; then
+    mkdir -p "${cache:h}" && { print -r -- "$stamp"; "$@" 2>/dev/null; } >| "$cache"
   fi
   source "$cache"
 }

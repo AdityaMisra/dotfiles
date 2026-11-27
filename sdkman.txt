@@ -1,4 +1,6 @@
 # SDKMAN candidates installed by bootstrap.sh: <candidate> <version> [default]
-java 17.0.12-tem default
-java 11.0.24-tem
+#   <version> is exact (9.9.1, 17.0.21.0+9-tem) or <major>-<vendor> (17-tem):
+#   the newest build of that major is installed; an installed one is reused.
+java 17-tem default
+java 11-tem
 gradle 9.9.1 default

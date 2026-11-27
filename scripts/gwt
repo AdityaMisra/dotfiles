@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-# usage: gwt add <branch> [base]    create worktree at ../<repo>-<branch>
-#        gwt switch <branch>        cd into existing worktree (use as `cd $(gwt switch ...)`)
-#        gwt rm <branch>            remove worktree + delete local branch
+# usage: gwt add <branch> [base]    create a worktree at ../<repo>-<branch> (new branch from base if needed)
+#        gwt switch <branch>        print the worktree path (use: cd "$(gwt switch <branch>)")
+#        gwt rm <branch>            remove the worktree and delete the branch if merged
 #        gwt list                   list worktrees
+#
+# Worktrees let you run several Claude Code sessions on one repo, each on its own branch,
+# without them overwriting each other's files.
 # end
-source "$(dirname "$0")/_lib.sh"
+source "$(dirname "$(readlink -f "$0")")/_lib.sh"
 handle_help "$@"
 
 cmd="${1:-list}"
@@ -12,9 +15,18 @@ shift || true
 
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "not a git repo"
 
-repo_root="$(git rev-parse --show-toplevel)"
-repo_name="$(basename "$repo_root")"
-parent="$(dirname "$repo_root")"
+# Always derive names from the main worktree, so gwt behaves the same from any worktree.
+main_root="$(git worktree list --porcelain | sed -n '1s/^worktree //p')"
+repo_name="$(basename "$main_root")"
+parent="$(dirname "$main_root")"
+
+# Path of the worktree that has <branch> checked out (handles paths with spaces).
+worktree_for() {
+  git worktree list --porcelain | awk -v b="refs/heads/$1" '
+    /^worktree / { wt = substr($0, 10) }
+    /^branch /   { if (substr($0, 8) == b) { print wt; exit } }
+  '
+}
 
 case "$cmd" in
   add)
@@ -30,18 +42,16 @@ case "$cmd" in
     ;;
   switch)
     branch="${1:?branch name required}"
-    target="$(git worktree list --porcelain | awk -v b="$branch" '
-      /^worktree / { wt = $2 }
-      /^branch refs\/heads\// { gsub(/refs\/heads\//, "", $2); if ($2 == b) { print wt; exit } }
-    ')"
+    target="$(worktree_for "$branch")"
     [[ -n "$target" ]] || die "no worktree for branch $branch"
-    echo "$target"
+    printf '%s\n' "$target"
     ;;
   rm)
     branch="${1:?branch name required}"
-    target="$parent/${repo_name}-${branch//\//-}"
+    target="$(worktree_for "$branch")"
+    [[ -n "$target" ]] || die "no worktree for branch $branch"
     git worktree remove "$target"
-    git branch -d "$branch" || warn "branch '$branch' not deleted (unmerged?)"
+    git branch -d "$branch" || warn "branch '$branch' kept (not merged yet; use git branch -D to force)"
     ;;
   list|ls)
     git worktree list

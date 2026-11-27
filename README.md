@@ -31,20 +31,21 @@ A visual guide to every feature is in [`docs/guide.html`](docs/guide.html). Open
 6. **Pick a theme:** run `theme`.
 
 Re-run `./bootstrap.sh` at any time; it's safe. To update from GitHub: `./update.sh` (git pull + bootstrap).
+Edits to existing files apply immediately (they're symlinks); new files and new packages need the bootstrap run.
 
 ### What bootstrap.sh does
 
 | Step | What happens |
 | --- | --- |
 | 1. Xcode CLT + Homebrew | Installed if missing |
-| 2. Packages | `brew bundle` with `Brewfile` (plus `Brewfile.local` if you create one). **Apps already in `/Applications` are skipped**, not reinstalled. iTerm2 is installed if missing. |
-| 3. Toolchains | SDKMAN plus the versions in `sdkman.txt` (Java, Gradle), Python CLI tools from `uv-tools.txt`, VS Code extensions from `dotfiles/vscode/extensions.txt` |
-| 4. Backup | Existing files that would be replaced go to `~/.dotfiles-backup/<timestamp>/` |
+| 2. Packages | `brew bundle --no-upgrade` with `Brewfile` (plus `Brewfile.local` if you create one). **Apps already in `/Applications` are skipped**, not reinstalled. Third-party formulae named in the Brewfiles are marked trusted. A failing package prints a warning instead of stopping the run. iTerm2 is installed if missing. |
+| 3. Toolchains | SDKMAN plus the versions in `sdkman.txt` (`17-tem` means the newest Java 17 Temurin), Python CLI tools from `uv-tools.txt`, VS Code extensions from `dotfiles/vscode/extensions.txt` |
+| 4. Backup | Checks that `stow` and `jq` are available, then moves existing files that would be replaced to `~/.dotfiles-backup/<timestamp>/` (delete that folder once you're happy) |
 | 5. Link | GNU Stow symlinks each `dotfiles/<pkg>/` into `~` (`--no-folding`, so files only, never whole folders) |
 | 6. Private files | Creates `~/.gitconfig.local` (asks for your name and email), `~/.zshrc.local` and `~/.workrc` if missing |
-| 7. iTerm2 | Sets **Dotfiles** as the default profile, allows clipboard access (Claude Code `/copy`), and reloads the profiles |
+| 7. iTerm2 | Sets **Dotfiles** as the default profile, allows clipboard access (lets terminal programs, including ones over SSH, write to your clipboard; needed for Claude Code `/copy`), and reloads the profiles. If iTerm is running, it reminds you to restart it. |
 | 8. Atuin | Imports your existing `~/.zsh_history` once |
-| 9. Repo guard | Turns on the pre-commit secret check and sets this repo's commit email to your GitHub no-reply address (via `gh`, if signed in) |
+| 9. Repo guard | Turns on the commit hooks and sets this repo's commit email to your GitHub no-reply address (`<id>+<login>@users.noreply.github.com`, via `gh` if signed in) |
 
 ## Your private files
 
@@ -71,7 +72,7 @@ dotfiles/                     # stow packages -> ~
   iterm/    Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json  (generated)
   zed/      .config/zed/settings.json
   bat/ ipython/ bin/ (gwt, gclean)
-  vscode/   extensions.txt (installed by bootstrap; settings not linked)
+  vscode/   extensions.txt (installed by bootstrap)
 iterm/
   base.json                   # profile settings: font, keys, cursor, title, alerts, ...
   colors/*.itermcolors        # one theme each
@@ -110,7 +111,7 @@ To change profile settings, edit `iterm/base.json` and re-run the script.
 
 | Key / command | What it does |
 | --- | --- |
-| `Ctrl-R` | Atuin full-screen history search. Press Ctrl-R again inside it to cycle global → host → session → directory |
+| `Ctrl-R` | Atuin full-screen history search. Press Ctrl-R again inside it to cycle the filter: global → host → session → directory → workspace (current git repo) |
 | `↑` / `↓` | History entries that start with what you've typed |
 | `Tab` | fzf-tab fuzzy completion (with a preview for `cd`) |
 | `→` or `Ctrl-Space` | Accept the grey autosuggestion |
@@ -118,22 +119,28 @@ To change profile settings, edit `iterm/base.json` and re-run the script.
 | `z foo`, `zi` | zoxide: jump to a frequently used directory |
 | `Ctrl-X Ctrl-E` | Edit the current command in `$EDITOR` (Zed, then VS Code, then vim) |
 | `c`, `cr`, `cn` | `claude`, `claude --resume`, `claude --continue` |
+| `gwt add <branch>` | New git worktree in `../<repo>-<branch>`, to run another Claude session on its own branch. `gwt switch`, `gwt rm`, `gwt list`. |
+| `gclean` | Delete local branches already merged into the default branch (asks first) |
 | `l`, `ll`, `lt` | eza listings (icons, git status, tree) |
 | `gs gd gds gl gb` | git status / diff / staged diff / graph log / branches by date |
 
 History is kept in two places: zsh's own `~/.zsh_history` (200k entries, shared between tabs)
 and Atuin's SQLite database. Atuin sync is **off**, so history never leaves the machine.
-Commands that start with a space aren't recorded.
+Commands that start with a space aren't recorded, and commands that set a token, secret, password or API key
+(`export GITHUB_TOKEN=…`) are kept out of both histories.
 
 Startup time: `zsh-bench` (about 0.25 s).
 
 ## Keeping the repo secret-free
 
-If you publish your copy, `bootstrap.sh` has already turned on `.githooks/pre-commit`. It blocks a commit when:
+If you publish your copy, `bootstrap.sh` has already turned on the hooks in `.githooks/`. They block a commit when:
 
 1. **gitleaks** finds an API key, token, private key or password in the staged changes;
-2. the commit email is not a `@users.noreply.github.com` address;
-3. a staged line contains a word from `~/.config/dotfiles/forbidden-words`, or your `~/.gitconfig.local` email.
+2. the commit email is not your GitHub no-reply address (`<id>+<login>@users.noreply.github.com`);
+3. a staged line **or the commit message** contains a word from `~/.config/dotfiles/forbidden-words`, or your `~/.gitconfig.local` email.
    That word list stays **outside** the repo, so add employer names or internal hostnames to it freely.
 
 To scan everything by hand: `gitleaks git .` (history) and `gitleaks dir .` (working tree).
+
+GitHub's own merge commits use your account email, which the hooks can't see. To keep it private, turn on
+**GitHub → Settings → Emails → "Keep my email address private"** and **"Block command line pushes that expose my email"**.
