@@ -25,3 +25,16 @@ _vsc="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 [[ -d "$HOME/.cargo/bin" ]] && path+=("$HOME/.cargo/bin")
 
 export PATH
+
+# _cached_init <name> <command...>: source a tool's generated shell setup from a cache
+# file, regenerating it only when the tool's binary is newer (i.e. after an upgrade).
+# Saves ~100ms per new shell versus running `tool init zsh` every time.
+_cached_init() {
+  local name=$1; shift
+  local bin=${commands[$1]} cache="$XDG_CACHE_HOME/zsh/init-$name.zsh"
+  [[ -n $bin ]] || return 0
+  if [[ ! -s $cache || $bin -nt $cache ]]; then
+    mkdir -p "${cache:h}" && "$@" >| "$cache" 2>/dev/null
+  fi
+  source "$cache"
+}

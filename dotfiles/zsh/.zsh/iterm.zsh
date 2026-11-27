@@ -22,7 +22,7 @@ theme() {
     list)  print -l $names; return ;;
     current)
       if [[ -r "$_ITERM_THEME_FILE" ]]; then print -r -- "$(<"$_ITERM_THEME_FILE")"
-      else print "Catppuccin Mocha (default)"; fi
+      else print "$_ITERM_DEFAULT_THEME (default)"; fi
       return ;;
     reset) command rm -f "$_ITERM_THEME_FILE"; _iterm_set_profile Dotfiles; return ;;
     "")    pick=$(print -l $names | fzf --prompt="theme (now: $(theme current))> " --height=50% --reverse) || return ;;
@@ -30,12 +30,18 @@ theme() {
   (( ${names[(Ie)$pick]} )) || { echo "theme: unknown '$pick' (try: theme list)" >&2; return 1; }
 
   _iterm_set_profile "$pick"
-  mkdir -p "${_ITERM_THEME_FILE:h}" && print -r -- "$pick" > "$_ITERM_THEME_FILE"
+  if [[ $pick == $_ITERM_DEFAULT_THEME ]]; then command rm -f "$_ITERM_THEME_FILE"   # default: nothing to re-apply
+  else mkdir -p "${_ITERM_THEME_FILE:h}" && print -r -- "$pick" > "$_ITERM_THEME_FILE"; fi
 }
 
-# New tabs/windows open with the "Dotfiles" profile; re-apply the remembered theme.
+# New tabs/windows open with the "Dotfiles" profile, which already uses the default theme's
+# colours. Re-apply a remembered theme only when it's a different one: a profile switch
+# makes iTerm redraw the whole tab, which shows up as a flicker when a tab opens.
+_ITERM_DEFAULT_THEME="Catppuccin Mocha"   # keep in sync with _default_theme in iterm/base.json
 if [[ "$ITERM_PROFILE" == "Dotfiles" && -r "$_ITERM_THEME_FILE" ]]; then
-  _iterm_set_profile "$(<"$_ITERM_THEME_FILE")"
+  _t="$(<"$_ITERM_THEME_FILE")"
+  [[ $_t != $_ITERM_DEFAULT_THEME ]] && _iterm_set_profile "$_t"
+  unset _t
 fi
 
 # Tab title: the current git repo name (or folder name outside a repo).

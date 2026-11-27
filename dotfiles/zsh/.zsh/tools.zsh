@@ -10,15 +10,15 @@ if (( $+commands[fzf] )); then
   fi
   export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:300 {} 2>/dev/null'"
   export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --color=always --icons {}'"
-  source <(fzf --zsh)
+  _cached_init fzf fzf --zsh
 fi
 
 # zoxide: `z foo` jumps to the most-used dir matching foo; `zi` = interactive.
-(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+_cached_init zoxide zoxide init zsh
 
 # atuin: Ctrl-R full-screen fuzzy history (sync disabled in ~/.config/atuin/config.toml).
 # Up-arrow stays as prefix search (options.zsh).
-(( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow)"
+_cached_init atuin atuin init zsh --disable-up-arrow
 
 # nvm: lazy-load so it doesn't cost ~300ms at every shell start.
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
