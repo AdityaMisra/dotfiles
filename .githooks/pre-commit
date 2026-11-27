@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Pre-commit guard for this PUBLIC repo. Enabled by bootstrap.sh via
+#   git config core.hooksPath .githooks
+#
+# 1. gitleaks: blocks API keys, tokens, private keys, passwords in staged changes.
+# 2. Author email must be a GitHub no-reply address (never a work email).
+# 3. Personal deny-list: blocks staged lines containing any word from
+#    ~/.config/dotfiles/forbidden-words (one per line; employer names, internal
+#    hostnames, your work email ...). That file lives OUTSIDE the repo so the
+#    list itself is never published. Your ~/.gitconfig.local email is always included.
+#
+# Bypass in an emergency (not recommended): git commit --no-verify
+set -euo pipefail
+
+red()  { printf '\033[1;31m%s\033[0m\n' "$*" >&2; }
+fail=0
+
+# --- 1. gitleaks -------------------------------------------------------------
+if command -v gitleaks >/dev/null 2>&1; then
+  if ! gitleaks git --pre-commit --staged --redact --no-banner --log-level warn .; then
+    red "pre-commit: gitleaks found a possible secret (see above)."
+    fail=1
+  fi
+else
+  red "pre-commit: gitleaks is not installed (brew install gitleaks)."
+  fail=1
+fi
+
+# --- 2. author email ---------------------------------------------------------
+email="$(git config user.email || true)"
+if [[ "$email" != *@users.noreply.github.com ]]; then
+  red "pre-commit: commit email is '$email' — this repo is public."
+  red "  fix: git config user.email <id>+<user>@users.noreply.github.com"
+  fail=1
+fi
+
+# --- 3. personal deny-list ----------------------------------------------------
+words=()
+list="${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/forbidden-words"
+if [[ -r "$list" ]]; then
+  while IFS= read -r w; do
+    [[ -z "$w" || "$w" == \#* ]] || words+=("$w")
+  done < "$list"
+fi
+local_email="$(git config --file "$HOME/.gitconfig.local" user.email 2>/dev/null || true)"
+[[ -n "$local_email" ]] && words+=("$local_email")
+
+if (( ${#words[@]} )); then
+  added="$(git diff --cached -U0 --no-color | grep -E '^\+[^+]' || true)"
+  for w in "${words[@]}"; do
+    if grep -qiF -- "$w" <<<"$added"; then
+      red "pre-commit: staged changes contain a forbidden word from $list"
+      git diff --cached -U0 --no-color | grep -niF -- "$w" | sed 's/^/    /' >&2 || true
+      fail=1
+    fi
+  done
+fi
+
+if (( fail )); then
+  red "Commit blocked."
+  exit 1
+fi

@@ -1,74 +1,67 @@
-# Base Brewfile — applies to every machine.
-# Per-machine extras live in hosts/<alias>/Brewfile.work and are applied by
-# install/08-host-overlay.sh.
-#
-# Re-run anytime via:  brew bundle --file=Brewfile
-# Drift check via:     brew bundle check --file=Brewfile
+# Everything Homebrew installs on a new Mac. Applied by ./bootstrap.sh (brew bundle).
+# Drift check: brew bundle check --file=Brewfile
+# Apps already in /Applications (installed by hand or by IT) are skipped, not reinstalled.
+# Machine- or employer-specific extras go in Brewfile.local (not in git), which bootstrap also applies.
 
-# --- Taps -------------------------------------------------------------------
-# (homebrew/core, homebrew/cask are built-in since Homebrew 4.x — do NOT tap)
-
-# --- CLI tools (formulae) ---------------------------------------------------
-brew "stow"                 # symlink farm manager for dotfiles/
-brew "mas"                  # Mac App Store CLI
-brew "gh"                   # GitHub CLI
+# --- Core -------------------------------------------------------------------
 brew "git"
-brew "git-lfs"
-brew "diff-so-fancy"        # git diff pager
-brew "fzf"                  # fuzzy finder
-brew "ripgrep"              # rg
-brew "bat"                  # cat with wings
-brew "lsd"                  # ls with icons
-brew "eza"                  # modern ls (kept alongside lsd; preference floats)
-brew "jq"                   # JSON
-brew "yq"                   # YAML
-brew "fx"                   # interactive JSON viewer
-brew "duf"                  # disk usage
-brew "htop"
-brew "btop"
-brew "starship"             # prompt
-brew "tmux"
-brew "neovim"
-brew "zoxide"               # smarter cd
-brew "tldr"
-brew "wget"
-brew "coreutils"            # GNU coreutils (gls, gdate, etc.)
-brew "pipx"                 # isolated python tool installs
-brew "uv"                   # fast python package manager
-brew "espanso"              # text expander
-brew "imagemagick"
-brew "ffmpeg"
+brew "gh"                      # GitHub CLI
+brew "stow"                    # symlinks dotfiles/<pkg> into ~
+brew "jq"
+brew "gitleaks"                # secret scanner used by .githooks/pre-commit
+brew "bash"                    # modern bash (macOS ships 3.2)
 
-# Shell candy
-brew "zsh-syntax-highlighting"
-brew "zsh-autosuggestions"
+# --- Shell + prompt + history -------------------------------------------------
+brew "starship"                # prompt
+brew "atuin"                   # Ctrl-R history search (SQLite)
 brew "zsh-completions"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+brew "fzf-tab"                 # fuzzy Tab completion
 
-# --- GUI applications (casks) ----------------------------------------------
-cask "ghostty"              # terminal
-cask "hammerspoon"          # window mgmt + global hotkeys (replaces spectacle)
-cask "raycast"              # launcher
-cask "maccy"                # clipboard history
+# --- Modern CLI -----------------------------------------------------------------
+brew "fzf"
+brew "fd"
+brew "ripgrep"
+brew "bat"
+brew "eza"                     # ls replacement (icons, git status, tree)
+brew "zoxide"
+brew "git-delta"               # git diff pager
+brew "duf"
+brew "btop"
+brew "htop"
+brew "fx"                      # interactive JSON viewer
+brew "tlrc"                    # tldr pages client (`tldr git`)
+brew "wget"
 
-# Comms
+# --- Dev tooling ------------------------------------------------------------------
+brew "awscli"
+brew "uv"                      # Python packages/tools (see uv-tools.txt)
+brew "jira-cli"
+brew "googleworkspace-cli"     # gws: Google Docs/Sheets/Drive from the terminal
+
+# --- Terminal, editors, AI ----------------------------------------------------------
+# iTerm2 is installed by bootstrap.sh only if missing.
+cask "font-jetbrains-mono-nerd-font"
+cask "claude-code"
+cask "copilot-cli"
+cask "codexbar"                # AI usage meter in the menu bar
+cask "zed"
+cask "visual-studio-code"      # extensions: dotfiles/vscode/extensions.txt
+cask "sublime-text"
+cask "orbstack"                # Docker/Linux VMs
+
+# --- Apps ---------------------------------------------------------------------------
+cask "google-chrome"
+cask "safari-technology-preview"
 cask "slack"
 cask "zoom"
-
-# Dev environments
-cask "cursor"               # primary editor
-cask "visual-studio-code"
-cask "jetbrains-toolbox"    # installs IntelliJ IDEA + others
-cask "postman"
-cask "docker"               # Docker Desktop
-cask "orbstack"             # lightweight container/k8s runtime; pick one over time
-
-# Browsers + utilities
-cask "google-chrome"
-cask "firefox"
-cask "rectangle"            # secondary tiling fallback if Hammerspoon misbehaves
-cask "appcleaner"
-cask "the-unarchiver"
-
-# Fonts
-cask "font-jetbrains-mono-nerd-font"
-cask "font-fira-code-nerd-font"
+cask "whatsapp"
+cask "notion"
+cask "obsidian"
+cask "microsoft-onenote"
+cask "google-drive"
+cask "raycast"                 # launcher
+cask "rectangle"               # window snapping
+cask "itsycal"                 # menu-bar calendar
+cask "flux-app"                # f.lux screen colour temperature

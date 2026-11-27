@@ -1,43 +1,27 @@
-# PATH + language toolchain locations.
-# Hardcoded versions (Go 1.15.1, area51/flutter) intentionally NOT carried
-# forward from dotzshrc_mac — let version managers (asdf/sdkman/nvm) own them.
+# PATH and toolchains. `typeset -U` de-duplicates entries.
+typeset -U path PATH fpath
 
-typeset -U path PATH
-
-if [[ -x /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -x /usr/local/bin/brew ]]; then
-  eval "$(/usr/local/bin/brew shellenv)"
+# Non-login shells (e.g. `zsh` typed inside a shell) may not have run .zprofile.
+if [[ -z "$HOMEBREW_PREFIX" ]]; then
+  if [[ -x /opt/homebrew/bin/brew ]]; then eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+  elif [[ -x /usr/local/bin/brew ]]; then eval "$(/usr/local/bin/brew shellenv zsh)"; fi
 fi
 
-path=(
-  "$HOME/.local/bin"
-  "$HOME/bin"
-  $path
-  "/usr/local/sbin"
-)
+path=("$HOME/.local/bin" "$HOME/bin" $path)
 
-if [[ -z "${SDKMAN_DIR:-}" && -z "${JAVA_HOME:-}" ]]; then
-  if /usr/libexec/java_home -v 17 >/dev/null 2>&1; then
-    export JAVA_HOME="$(/usr/libexec/java_home -v 17)"
-  elif /usr/libexec/java_home >/dev/null 2>&1; then
-    export JAVA_HOME="$(/usr/libexec/java_home)"
-  fi
+# Java: SDKMAN if present, otherwise Homebrew openjdk@21.
+if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
+  export SDKMAN_DIR="$HOME/.sdkman"
+  source "$SDKMAN_DIR/bin/sdkman-init.sh"
+elif [[ -d "$HOMEBREW_PREFIX/opt/openjdk@21/bin" ]]; then
+  path=("$HOMEBREW_PREFIX/opt/openjdk@21/bin" $path)
 fi
 
-if [[ -d "$HOME/go" ]]; then
-  export GOPATH="$HOME/go"
-  path+=("$GOPATH/bin")
-fi
+# VS Code `code` command
+_vsc="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+[[ -d $_vsc ]] && path+=("$_vsc"); unset _vsc
 
-if [[ -d "$HOME/Library/Android/sdk" ]]; then
-  export ANDROID_HOME="$HOME/Library/Android/sdk"
-  path+=(
-    "$ANDROID_HOME/tools"
-    "$ANDROID_HOME/tools/bin"
-    "$ANDROID_HOME/platform-tools"
-    "$ANDROID_HOME/emulator"
-  )
-fi
+[[ -d "$HOME/go" ]] && { export GOPATH="$HOME/go"; path+=("$GOPATH/bin"); }
+[[ -d "$HOME/.cargo/bin" ]] && path+=("$HOME/.cargo/bin")
 
 export PATH

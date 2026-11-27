@@ -1,46 +1,25 @@
-# Ported from dotzshrc_mac.
-parse_git_branch() {
-  git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-}
-
-# Ported from dotzshrc_mac. Lists every local branch with its last-commit
-# timestamp; highlights the current branch with a back-arrow glyph.
+# Every local branch with its last-commit time; current branch marked with an arrow.
 git_branch_more() {
   emulate -L zsh
   local current k
   current=$(git symbolic-ref --short HEAD 2>/dev/null) || return 1
-  for k in $(git branch | sed 's/^..//'); do
-    if [[ "$k" == "$current" ]]; then
-      printf '%s\t%s  \uf060\n' \
-        "$(git show --pretty=format:'%Cgreen%ci %Cblue%cr%Creset' "$k" | head -n1)" \
-        "$k"
-    else
-      printf '%s\t%s\n' \
-        "$(git show --pretty=format:'%Cgreen%ci %Cblue%cr%Creset' "$k" | head -n1)" \
-        "$k"
-    fi
+  for k in $(git for-each-ref --format='%(refname:short)' refs/heads); do
+    printf '%s\t%s%s\n' \
+      "$(git show -s --format='%Cgreen%ci %Cblue%cr%Creset' "$k")" "$k" \
+      "$([[ $k == $current ]] && print -n '  ')"
   done | sort
 }
 
-# Ported from live ~/.zshrc — runs an interactive shell in a fresh container,
-# mounting the cwd. `dockerit ubuntu` -> bash in a clean ubuntu container.
-dockerit() {
-  emulate -L zsh
-  local image="${1:-alpine}"
-  shift || true
-  local shell="/bin/bash"
-  case "$image" in
-    alpine*) shell="/bin/sh" ;;
-  esac
-  docker run --rm -it \
-    -v "$PWD:/work" \
-    -w /work \
-    "$image" \
-    "$@" "$shell"
-}
+mkcd() { mkdir -p -- "$1" && cd -- "$1"; }
 
-mkcd() {
-  mkdir -p -- "$1" && cd -- "$1"
+# Open a path in IntelliJ IDEA
+idea() { open -na "IntelliJ IDEA.app" --args "${@:-.}"; }
+
+# Interactive shell in a throwaway container with $PWD mounted at /work
+dockerit() {
+  local image="${1:-alpine}"; shift 2>/dev/null
+  local sh=/bin/bash; [[ $image == alpine* ]] && sh=/bin/sh
+  docker run --rm -it -v "$PWD:/work" -w /work "$image" "$@" "$sh"
 }
 
 extract() {
@@ -54,6 +33,9 @@ extract() {
     *.gz)             gunzip  "$1" ;;
     *.zip)            unzip   "$1" ;;
     *.7z)             7z x    "$1" ;;
-    *)                echo "extract: unsupported format: $1" >&2; return 1 ;;
+    *) echo "extract: unsupported format: $1" >&2; return 1 ;;
   esac
 }
+
+# Measure shell startup time
+zsh-bench() { for i in {1..5}; do /usr/bin/time zsh -i -c exit; done; }

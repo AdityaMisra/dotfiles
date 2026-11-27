@@ -1,12 +1,8 @@
-[user]
-	name = Aditya Misra
-	# Override per-machine in ~/.config/git/config or hosts/<alias>/zshrc.local
-	email = aditya.misra@users.noreply.github.com
-	username = aditya.misra
+# Identity (name, email) lives in ~/.gitconfig.local, included at the bottom.
+# bootstrap.sh creates it; this shared file stays free of personal details.
 [core]
 	excludesfile = ~/.gitignore_global
-	pager = diff-so-fancy | less --tabs=4 -RFX
-	editor = cursor --wait
+	pager = delta
 [init]
 	defaultBranch = main
 [pull]
@@ -24,22 +20,15 @@
 	algorithm = histogram
 	colorMoved = default
 [interactive]
-	diffFilter = diff-so-fancy --patch
+	diffFilter = delta --color-only
+[delta]
+	navigate = true          # n / N jump between files
+	line-numbers = true
+	side-by-side = false     # toggle per-run: git -c delta.side-by-side=true diff
+	syntax-theme = ansi      # follow the iTerm theme
+	hyperlinks = true
 [color]
 	ui = true
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
-[color "diff"]
-	meta = 11
-	frag = magenta bold
-	func = 146 bold
-	commit = yellow bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
 [color "status"]
 	added = green bold
 	changed = yellow bold

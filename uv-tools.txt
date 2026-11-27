@@ -1,0 +1,2 @@
+# Python CLI tools installed by bootstrap.sh with `uv tool install`
+py-spy
