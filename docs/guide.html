@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dotfiles — guide</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --line: #d1d9e0; --card: #f6f8fa;
+    --accent: #0969da; --accent-bg: #ddf4ff; --ok: #1a7f37; --warn: #9a6700; --code: #eff2f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e2e; --fg: #cdd6f4; --muted: #a6adc8; --line: #45475a; --card: #27273a;
+      --accent: #89b4fa; --accent-bg: #313244; --ok: #a6e3a1; --warn: #f9e2af; --code: #313244;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+  nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line);
+        padding: 10px 24px; z-index: 2; font-size: 14px; }
+  nav a { margin-right: 16px; color: var(--accent); text-decoration: none; white-space: nowrap; }
+  h1 { font-size: 30px; margin: 8px 0 4px; }
+  h2 { font-size: 22px; margin: 48px 0 12px; padding-top: 8px; border-top: 1px solid var(--line); }
+  h3 { font-size: 17px; margin: 28px 0 8px; }
+  p.lead { color: var(--muted); font-size: 17px; margin-top: 0; }
+  code, kbd { font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+              font-size: 13px; background: var(--code); padding: 1px 5px; border-radius: 4px; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; }
+  pre { background: var(--code); padding: 12px 14px; border-radius: 8px; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th { background: var(--card); font-weight: 600; position: sticky; top: 41px; }
+  td:first-child { white-space: nowrap; }
+  a { color: var(--accent); }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 10px;
+         background: var(--accent-bg); color: var(--accent); margin-left: 4px; }
+  .tag.local { background: transparent; border: 1px solid var(--warn); color: var(--warn); }
+  .tag.repo { background: transparent; border: 1px solid var(--ok); color: var(--ok); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card h4 { margin: 0 0 6px; font-size: 15px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0; }
+  .box { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+  .box b { display: block; font-size: 14px; }
+  .arrow { color: var(--muted); font-size: 18px; }
+  .note { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+  .muted { color: var(--muted); }
+  footer { margin-top: 60px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="#capabilities">Capabilities</a>
+  <a href="#how-it-fits">How it fits together</a>
+  <a href="#files">Files</a>
+  <a href="#private">Private files</a>
+  <a href="#iterm">iTerm settings</a>
+  <a href="#system">System changes</a>
+  <a href="#new-laptop">New laptop</a>
+</nav>
+<main>
+
+<h1>dotfiles guide</h1>
+<p class="lead">What this setup gives you, how to use each part, which file controls it, and how everything connects.
+Links open the file in this repo. Paths starting with <code>~</code> are in your home folder: open them with <code>zed &lt;path&gt;</code>.</p>
+
+<div class="cards">
+  <div class="card"><h4>⌨️ Find any command</h4><p><kbd>Ctrl-R</kbd> searches everything you've ever run, across tabs.</p></div>
+  <div class="card"><h4>⚡ Type less</h4><p>Grey suggestions, fuzzy <kbd>Tab</kbd>, <code>z</code> to jump to folders.</p></div>
+  <div class="card"><h4>🎨 15 themes</h4><p><code>theme</code> switches colours; the prompt and diffs follow.</p></div>
+  <div class="card"><h4>🤖 Claude-friendly</h4><p>Tab titles per repo, notifications, Cmd-click to open files in Zed.</p></div>
+  <div class="card"><h4>🔒 Safe to publish</h4><p>Commits are checked for secrets and personal details.</p></div>
+  <div class="card"><h4>🖥️ One-command setup</h4><p><code>./bootstrap.sh</code> rebuilds the whole setup on a new Mac.</p></div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="capabilities">1. Capabilities</h2>
+<table>
+  <thead><tr><th>Capability</th><th>How to use it</th><th>How it helps</th><th>Configured in</th></tr></thead>
+  <tbody>
+  <tr><td><b>Atuin history search</b></td>
+      <td><kbd>Ctrl-R</kbd>, type any part of a command. Inside it, <kbd>Ctrl-R</kbd> cycles all → this machine → this tab → this folder. <kbd>Enter</kbd> puts the command on the line to edit.</td>
+      <td>Finds any past command with its folder, time and exit code. Shared across tabs. Sync is off, so nothing leaves the machine.</td>
+      <td><a href="../dotfiles/atuin/.config/atuin/config.toml">atuin/config.toml</a>, <a href="../dotfiles/zsh/.zsh/tools.zsh">tools.zsh</a></td></tr>
+  <tr><td><b>Prefix history</b></td>
+      <td>Type <code>git</code> and press <kbd>↑</kbd> / <kbd>↓</kbd></td>
+      <td>Steps only through commands that start with what you typed.</td>
+      <td><a href="../dotfiles/zsh/.zsh/options.zsh">options.zsh</a></td></tr>
+  <tr><td><b>Autosuggestions</b></td>
+      <td>Grey text appears as you type. <kbd>→</kbd> or <kbd>Ctrl-Space</kbd> accepts it.</td>
+      <td>Repeat long commands in one keystroke.</td>
+      <td><a href="../dotfiles/zsh/.zsh/plugins.zsh">plugins.zsh</a></td></tr>
+  <tr><td><b>Fuzzy Tab completion</b></td>
+      <td><code>cd &lt;Tab&gt;</code>, <code>git checkout &lt;Tab&gt;</code>, <code>kill &lt;Tab&gt;</code>. <kbd>&lt;</kbd> / <kbd>&gt;</kbd> switch groups.</td>
+      <td>A searchable menu with a folder preview, instead of a wall of options.</td>
+      <td><a href="../dotfiles/zsh/.zsh/completions.zsh">completions.zsh</a></td></tr>
+  <tr><td><b>Syntax highlighting</b></td>
+      <td>Automatic</td>
+      <td>Unknown commands turn red before you press Enter.</td>
+      <td><a href="../dotfiles/zsh/.zsh/plugins.zsh">plugins.zsh</a></td></tr>
+  <tr><td><b>zoxide</b></td>
+      <td><code>z dotf</code> jumps to the most-used folder matching "dotf". <code>zi</code> opens a picker.</td>
+      <td>No more typing long paths.</td>
+      <td><a href="../dotfiles/zsh/.zsh/tools.zsh">tools.zsh</a></td></tr>
+  <tr><td><b>fzf pickers</b></td>
+      <td><kbd>Ctrl-T</kbd> inserts a file path. Right <kbd>⌥</kbd> + <kbd>C</kbd> cds into a folder.</td>
+      <td>Find files and folders by fuzzy name, with previews.</td>
+      <td><a href="../dotfiles/zsh/.zsh/tools.zsh">tools.zsh</a></td></tr>
+  <tr><td><b>Edit in your editor</b></td>
+      <td><kbd>Ctrl-X</kbd> <kbd>Ctrl-E</kbd></td>
+      <td>Write long commands in Zed (or VS Code, or vim), then run them.</td>
+      <td><a href="../dotfiles/zsh/.zshenv">.zshenv</a>, <a href="../dotfiles/zsh/.zsh/options.zsh">options.zsh</a></td></tr>
+  <tr><td><b>Starship prompt</b></td>
+      <td>Automatic</td>
+      <td>Shows the folder, git branch and changes, language versions, AWS profile/region, Kubernetes context (in k8s projects), how long the last command took, its exit code and the time.</td>
+      <td><a href="../dotfiles/starship/.config/starship.toml">starship.toml</a></td></tr>
+  <tr><td><b>Themes</b></td>
+      <td><code>theme</code> (picker), <code>theme current</code>, <code>theme list</code>, <code>theme "TokyoNight Storm"</code>, <code>theme reset</code></td>
+      <td>15 colour schemes. New tabs remember your choice, and the prompt, <code>bat</code> and git diffs follow it.</td>
+      <td><a href="../iterm/colors/">iterm/colors/</a>, <a href="../dotfiles/zsh/.zsh/iterm.zsh">iterm.zsh</a></td></tr>
+  <tr><td><b>Tab titles</b></td>
+      <td>Automatic: <code>dotfiles</code> at the prompt, <code>dotfiles ▸ claude</code> while running</td>
+      <td>Tell several Claude or terminal tabs apart at a glance.</td>
+      <td><a href="../dotfiles/zsh/.zsh/iterm.zsh">iterm.zsh</a>, <a href="../iterm/base.json">base.json</a></td></tr>
+  <tr><td><b>Cmd-click to open</b></td>
+      <td><kbd>⌘</kbd>-click <code>src/app.py:42</code> in any output</td>
+      <td>Jump from a stack trace or a Claude answer straight to the line in Zed.</td>
+      <td><a href="../iterm/base.json">base.json</a> (Semantic History)</td></tr>
+  <tr><td><b>Mac text editing</b></td>
+      <td><kbd>⌥←/→</kbd> word, <kbd>⌘←/→</kbd> line start/end, <kbd>⌥⌫</kbd> delete word, <kbd>⌘⌫</kbd> delete line</td>
+      <td>Edit commands the way you edit text in any Mac app.</td>
+      <td><a href="../iterm/base.json">base.json</a> (Keyboard Map)</td></tr>
+  <tr><td><b>Scrollback and tabs</b></td>
+      <td>Automatic</td>
+      <td>Unlimited scrollback, so long logs aren't lost. <kbd>⌘T</kbd> opens a new tab in the same folder.</td>
+      <td><a href="../iterm/base.json">base.json</a></td></tr>
+  <tr><td><b>Claude notifications</b></td>
+      <td>Automatic</td>
+      <td>A Mac notification when Claude Code finishes or needs you.</td>
+      <td><a href="../iterm/base.json">base.json</a> (alerts)</td></tr>
+  <tr><td><b>Claude shortcuts</b></td>
+      <td><code>c</code> = claude, <code>cr</code> = resume, <code>cn</code> = continue</td>
+      <td>Fewer keystrokes.</td>
+      <td><a href="../dotfiles/zsh/.zsh/aliases.zsh">aliases.zsh</a></td></tr>
+  <tr><td><b>Better git output</b></td>
+      <td><code>git diff</code> / <code>git log -p</code> use <b>delta</b>. Aliases: <code>gs gd gds gl gb</code>.</td>
+      <td>Syntax-highlighted diffs with line numbers. <kbd>n</kbd> / <kbd>N</kbd> jump between files.</td>
+      <td><a href="../dotfiles/git/.gitconfig">.gitconfig</a>, <a href="../dotfiles/zsh/.zsh/aliases.zsh">aliases.zsh</a></td></tr>
+  <tr><td><b>Modern CLI tools</b></td>
+      <td><code>l</code>, <code>ll</code>, <code>lt</code> (eza), <code>cat</code> (bat), <code>df</code> (duf), <code>btop</code>, <code>fx file.json</code>, <code>tldr tar</code></td>
+      <td>Listings with icons and git status, a coloured <code>cat</code>, JSON browsing and quick examples.</td>
+      <td><a href="../dotfiles/zsh/.zsh/aliases.zsh">aliases.zsh</a>, <a href="../Brewfile">Brewfile</a></td></tr>
+  <tr><td><b>Git helpers</b></td>
+      <td><code>gwt add &lt;branch&gt;</code> (worktree), <code>gclean</code> (delete merged branches)</td>
+      <td>Run several Claude sessions on separate branches without clashing.</td>
+      <td><a href="../scripts/gwt">scripts/gwt</a>, <a href="../scripts/gclean">scripts/gclean</a></td></tr>
+  <tr><td><b>Secret guard</b></td>
+      <td>Automatic on every commit in this repo</td>
+      <td>Blocks keys, tokens, your email and any words you list from being published.</td>
+      <td><a href="../.githooks/pre-commit">.githooks/pre-commit</a></td></tr>
+  <tr><td><b>One-command setup</b></td>
+      <td><code>./bootstrap.sh</code> (<code>--dry-run</code> to preview)</td>
+      <td>A new Mac gets identical tools, apps, editors and settings in minutes.</td>
+      <td><a href="../bootstrap.sh">bootstrap.sh</a></td></tr>
+  <tr><td><b>Fast shell</b></td>
+      <td>Automatic. <code>zsh-bench</code> measures it.</td>
+      <td>About 0.25 s to start: nvm loads lazily, and the completion cache rebuilds only once a day.</td>
+      <td><a href="../dotfiles/zsh/.zsh/tools.zsh">tools.zsh</a>, <a href="../dotfiles/zsh/.zsh/completions.zsh">completions.zsh</a></td></tr>
+  </tbody>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="how-it-fits">2. How it fits together</h2>
+
+<h3>The repo is the source of truth; your home folder holds links</h3>
+<div class="flow">
+  <div class="box"><b>Repo</b>dotfiles/zsh/.zshrc</div><span class="arrow">⇢ symlink ⇢</span>
+  <div class="box"><b>Home</b>~/.zshrc</div><span class="arrow">→</span>
+  <div class="box"><b>zsh reads it</b>every new tab</div>
+</div>
+<p>Editing either side changes both, because they're the same file. <code>git pull</code> updates your setup instantly. Re-run <code>./bootstrap.sh</code> only when new tools or files are added.</p>
+
+<h3>What happens when you open a tab</h3>
+<div class="flow">
+  <div class="box"><b>iTerm2</b>Dotfiles profile<br><span class="muted">font, keys, cursor, theme</span></div><span class="arrow">→</span>
+  <div class="box"><b>~/.zshenv</b>editor, XDG folders</div><span class="arrow">→</span>
+  <div class="box"><b>~/.zprofile</b>Homebrew, Docker, OrbStack</div><span class="arrow">→</span>
+  <div class="box"><b>~/.zshrc</b>loads ~/.zsh/*.zsh</div><span class="arrow">→</span>
+  <div class="box"><b>~/.workrc</b>employer setup <span class="tag local">local</span></div><span class="arrow">→</span>
+  <div class="box"><b>~/.zshrc.local</b>machine extras <span class="tag local">local</span></div>
+</div>
+<p><code>~/.zshrc</code> loads its modules in this order, because each depends on the ones before it:</p>
+<div class="flow">
+  <div class="box">paths</div><span class="arrow">→</span><div class="box">options</div><span class="arrow">→</span>
+  <div class="box">history</div><span class="arrow">→</span><div class="box">completions<br><span class="muted">+ fzf-tab</span></div><span class="arrow">→</span>
+  <div class="box">tools<br><span class="muted">fzf, zoxide, atuin</span></div><span class="arrow">→</span><div class="box">aliases</div><span class="arrow">→</span>
+  <div class="box">functions</div><span class="arrow">→</span><div class="box">iterm<br><span class="muted">theme, title</span></div><span class="arrow">→</span>
+  <div class="box">prompt<br><span class="muted">starship</span></div><span class="arrow">→</span><div class="box">plugins<br><span class="muted">suggestions, highlighting: last</span></div>
+</div>
+
+<h3>How iTerm profiles are built</h3>
+<div class="flow">
+  <div class="box"><b>iterm/base.json</b>settings</div><span class="arrow">+</span>
+  <div class="box"><b>iterm/colors/*.itermcolors</b>15 themes</div><span class="arrow">→ build-profiles.py →</span>
+  <div class="box"><b>dotfiles.json</b>"Dotfiles" + 15 theme profiles</div><span class="arrow">⇢ symlink ⇢</span>
+  <div class="box"><b>iTerm2</b>DynamicProfiles folder</div>
+</div>
+<p>Each theme profile inherits every setting from "Dotfiles" and changes only the colours. The <code>theme</code> command switches the current tab's profile and saves the choice in <code>~/.local/state/iterm-theme</code>; new tabs read it and re-apply it.</p>
+
+<h3>How the tab title works</h3>
+<div class="flow">
+  <div class="box"><b>iterm.zsh</b>before each prompt or command</div><span class="arrow">→ sets variable <code>user.title</code> →</span>
+  <div class="box"><b>Dotfiles profile</b>Custom Tab Title <code>\(user.title)</code></div><span class="arrow">→</span>
+  <div class="box"><b>Tab</b>dotfiles ▸ claude</div>
+</div>
+<p>Claude Code is told not to set titles (<code>CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1</code>), so the repo name stays visible.</p>
+
+<!-- ===================================================================== -->
+<h2 id="files">3. Files in the repo <span class="tag repo">in git</span></h2>
+<table>
+  <thead><tr><th>Repo file</th><th>Linked to</th><th>What it controls</th></tr></thead>
+  <tbody>
+  <tr><td><a href="../bootstrap.sh">bootstrap.sh</a></td><td>—</td><td>The installer: packages, toolchains, links, private files, iTerm, repo guard</td></tr>
+  <tr><td><a href="../update.sh">update.sh</a></td><td>—</td><td><code>git pull</code>, then bootstrap</td></tr>
+  <tr><td><a href="../Brewfile">Brewfile</a></td><td>—</td><td>Every Homebrew tool and app. Apps already in /Applications are skipped.</td></tr>
+  <tr><td><a href="../sdkman.txt">sdkman.txt</a></td><td>—</td><td>Java and Gradle versions (SDKMAN), and which are the defaults</td></tr>
+  <tr><td><a href="../uv-tools.txt">uv-tools.txt</a></td><td>—</td><td>Python CLI tools installed with <code>uv tool install</code></td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zshenv">zsh/.zshenv</a></td><td><code>~/.zshenv</code></td><td>Editor (Zed → VS Code → vim), pager, XDG folders</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zprofile">zsh/.zprofile</a></td><td><code>~/.zprofile</code></td><td>Homebrew, Docker and OrbStack on PATH (login shells)</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zshrc">zsh/.zshrc</a></td><td><code>~/.zshrc</code></td><td>Loads the modules below, then <code>~/.workrc</code> and <code>~/.zshrc.local</code></td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/paths.zsh">.zsh/paths.zsh</a></td><td><code>~/.zsh/</code></td><td>PATH, SDKMAN/Java, VS Code <code>code</code>, Go, Cargo</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/options.zsh">.zsh/options.zsh</a></td><td><code>~/.zsh/</code></td><td>cd behaviour, ↑/↓ prefix search, Ctrl-X Ctrl-E, word motion</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/history.zsh">.zsh/history.zsh</a></td><td><code>~/.zsh/</code></td><td>200k-entry shared history, no duplicates, a leading space keeps a command out</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/completions.zsh">.zsh/completions.zsh</a></td><td><code>~/.zsh/</code></td><td>Completion system (cached daily) and fzf-tab</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/tools.zsh">.zsh/tools.zsh</a></td><td><code>~/.zsh/</code></td><td>fzf, zoxide, atuin, lazy nvm</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/aliases.zsh">.zsh/aliases.zsh</a></td><td><code>~/.zsh/</code></td><td>eza, git, Python and Claude shortcuts</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/functions.zsh">.zsh/functions.zsh</a></td><td><code>~/.zsh/</code></td><td><code>gb</code>, <code>mkcd</code>, <code>idea</code>, <code>dockerit</code>, <code>extract</code>, <code>zsh-bench</code></td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/iterm.zsh">.zsh/iterm.zsh</a></td><td><code>~/.zsh/</code></td><td>The <code>theme</code> command and the tab title</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/prompt.zsh">.zsh/prompt.zsh</a></td><td><code>~/.zsh/</code></td><td>Starts Starship</td></tr>
+  <tr><td><a href="../dotfiles/zsh/.zsh/plugins.zsh">.zsh/plugins.zsh</a></td><td><code>~/.zsh/</code></td><td>Autosuggestions and syntax highlighting (must load last)</td></tr>
+  <tr><td><a href="../dotfiles/starship/.config/starship.toml">starship.toml</a></td><td><code>~/.config/starship.toml</code></td><td>Prompt layout and segments</td></tr>
+  <tr><td><a href="../dotfiles/atuin/.config/atuin/config.toml">atuin/config.toml</a></td><td><code>~/.config/atuin/</code></td><td>History search: fuzzy, sync off, secret filtering</td></tr>
+  <tr><td><a href="../dotfiles/git/.gitconfig">git/.gitconfig</a></td><td><code>~/.gitconfig</code></td><td>delta pager, rebase on pull, aliases. Identity comes from <code>~/.gitconfig.local</code>.</td></tr>
+  <tr><td><a href="../dotfiles/git/.gitignore_global">git/.gitignore_global</a></td><td><code>~/.gitignore_global</code></td><td>Files git ignores in every repo (.DS_Store, .env, caches…)</td></tr>
+  <tr><td><a href="../dotfiles/bat/.config/bat/config">bat/config</a></td><td><code>~/.config/bat/</code></td><td><code>bat</code> uses the terminal's theme colours</td></tr>
+  <tr><td><a href="../dotfiles/zed/.config/zed/settings.json">zed/settings.json</a></td><td><code>~/.config/zed/</code></td><td>Zed editor settings</td></tr>
+  <tr><td><a href="../dotfiles/vscode/extensions.txt">vscode/extensions.txt</a></td><td>—</td><td>VS Code extensions bootstrap installs</td></tr>
+  <tr><td><a href="../dotfiles/ipython/.ipython/profile_default/startup/startup.py">ipython/startup.py</a></td><td><code>~/.ipython/…</code></td><td>IPython startup imports</td></tr>
+  <tr><td><a href="../dotfiles/bin/.local/bin/">bin/.local/bin/</a></td><td><code>~/.local/bin/</code></td><td><code>gwt</code> and <code>gclean</code> on PATH</td></tr>
+  <tr><td><a href="../iterm/base.json">iterm/base.json</a></td><td>—</td><td>iTerm profile settings (explained <a href="#iterm">below</a>)</td></tr>
+  <tr><td><a href="../iterm/build-profiles.py">iterm/build-profiles.py</a></td><td>—</td><td>Builds the profiles file and makes iTerm reload it</td></tr>
+  <tr><td><a href="../dotfiles/iterm/Library/Application%20Support/iTerm2/DynamicProfiles/dotfiles.json">…/DynamicProfiles/dotfiles.json</a></td><td><code>~/Library/Application Support/iTerm2/DynamicProfiles/</code></td><td>Generated. Don't edit it by hand.</td></tr>
+  <tr><td><a href="../.githooks/pre-commit">.githooks/pre-commit</a></td><td>—</td><td>Secret and personal-detail check on commit</td></tr>
+  <tr><td><a href="../extras/">extras/</a></td><td>—</td><td>Old full-laptop automation, kept for reference and never installed</td></tr>
+  </tbody>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="private">4. Private files <span class="tag local">not in git</span></h2>
+<p>These hold everything personal or employer-specific. Bootstrap creates them if they're missing, and they never leave your machine.</p>
+<table>
+  <thead><tr><th>File</th><th>Holds</th><th>Read by</th></tr></thead>
+  <tbody>
+  <tr><td><code>~/.gitconfig.local</code></td><td>Your git name and email</td><td><code>~/.gitconfig</code> via <code>[include]</code></td></tr>
+  <tr><td><code>~/.workrc</code></td><td>Your employer's shell setup (login helpers, internal CLIs, proxies). One generic name: replace it when you change jobs.</td><td><code>~/.zshrc</code></td></tr>
+  <tr><td><code>~/.zshrc.local</code></td><td>Machine-specific aliases, paths, tokens</td><td><code>~/.zshrc</code> (last, so it can override anything)</td></tr>
+  <tr><td><code>Brewfile.local</code> (repo folder, gitignored)</td><td>Extra Homebrew packages for this machine</td><td><code>bootstrap.sh</code></td></tr>
+  <tr><td><code>~/.config/dotfiles/forbidden-words</code></td><td>Words the commit check blocks (employer name, hostnames…)</td><td><code>.githooks/pre-commit</code></td></tr>
+  <tr><td><code>~/.local/state/iterm-theme</code></td><td>Your current theme</td><td><code>iterm.zsh</code></td></tr>
+  <tr><td><code>~/.atuin/data/</code></td><td>Atuin's history database</td><td><code>atuin</code></td></tr>
+  <tr><td><code>~/.dotfiles-backup/&lt;time&gt;/</code></td><td>Originals of files bootstrap replaced</td><td>You, to restore something</td></tr>
+  </tbody>
+</table>
+<div class="note"><b>Relationship in one line:</b> shared, public settings live in the repo and are linked into <code>~</code>; each shared file ends by loading its <code>.local</code> / <code>.workrc</code> twin, so private details plug in without ever entering git.</div>
+
+<!-- ===================================================================== -->
+<h2 id="iterm">5. iTerm2 settings explained</h2>
+<p>All profile settings live in <a href="../iterm/base.json">iterm/base.json</a>. After editing it, run <code>python3 iterm/build-profiles.py</code> and iTerm reloads straight away.</p>
+<table>
+  <thead><tr><th>Setting</th><th>Value</th><th>What it means</th></tr></thead>
+  <tbody>
+  <tr><td>Dynamic Profile Parent Name</td><td><code>Default</code></td><td>Any setting not listed here comes from iTerm's built-in Default profile</td></tr>
+  <tr><td>Normal Font</td><td><code>JetBrainsMonoNFM-Regular 14</code></td><td>JetBrains Mono Nerd Font (Mono variant), 14 pt. The Nerd Font provides the prompt icons.</td></tr>
+  <tr><td>Use Non-ASCII Font</td><td><code>false</code></td><td>One font for everything; the Nerd Font already includes the icons</td></tr>
+  <tr><td>ASCII Anti Aliased</td><td><code>true</code></td><td>Smooth text rendering</td></tr>
+  <tr><td>Use Bold / Bright Bold / Italic</td><td><code>true</code></td><td>Real bold and italic, and bold text uses bright colours</td></tr>
+  <tr><td>Horizontal / Vertical Spacing</td><td><code>1</code> / <code>1.1</code></td><td>Normal character width, 10% extra line height for readability</td></tr>
+  <tr><td>Minimum Contrast</td><td><code>0</code></td><td>Show theme colours exactly as designed</td></tr>
+  <tr><td>Columns / Rows</td><td><code>160</code> × <code>45</code></td><td>Size of new windows</td></tr>
+  <tr><td>Unlimited Scrollback</td><td><code>true</code></td><td>Never lose output off the top</td></tr>
+  <tr><td>Custom Directory</td><td><code>Recycle</code></td><td>New tabs and splits open in the current tab's folder</td></tr>
+  <tr><td>Close Sessions On End</td><td><code>true</code></td><td>Typing <code>exit</code> closes the tab</td></tr>
+  <tr><td>Terminal Type</td><td><code>xterm-256color</code></td><td>What programs are told about the terminal; widely compatible</td></tr>
+  <tr><td>Mouse Reporting</td><td><code>true</code></td><td>Apps like Claude Code, vim and btop receive scrolling and clicks</td></tr>
+  <tr><td>Cursor Type</td><td><code>1</code></td><td>Thin vertical line (0 = underline, 1 = line, 2 = box)</td></tr>
+  <tr><td>Blinking Cursor</td><td><code>false</code></td><td>Steady cursor</td></tr>
+  <tr><td>Load Shell Integration Automatically</td><td><code>true</code></td><td>Command marks (the small ❯ in the margin; ⌘↑/⌘↓ jump between commands), current-folder tracking, command-finished detection. No install script needed.</td></tr>
+  <tr><td>Option Key Sends / Right Option Key Sends</td><td><code>0</code> / <code>2</code></td><td>Left ⌥ types normal characters (⌥3 = #). Right ⌥ acts as Meta (Esc+) for shortcuts like Alt-C and Alt-B/F.</td></tr>
+  <tr><td>Keyboard Map</td><td>8 entries</td><td>iTerm's Natural Text Editing preset: ⌥←/→ word, ⌘←/→ line start/end, ⌥⌫ delete word, ⌘⌫ delete line, Fn-⌫ forward delete</td></tr>
+  <tr><td>Silence Bell / Visual Bell / Flashing Bell</td><td><code>true</code> / <code>true</code> / <code>false</code></td><td>No beep sound; a subtle visual bell instead</td></tr>
+  <tr><td>BM Growl</td><td><code>true</code></td><td>Allow Notification Center alerts from this profile</td></tr>
+  <tr><td>Send Terminal Generated Alerts</td><td><code>true</code></td><td>Programs (Claude Code) can send a Mac notification via an escape sequence</td></tr>
+  <tr><td>Send Bell / Idle / New Output / Session Ended Alert</td><td><code>false</code></td><td>No noisy automatic notifications</td></tr>
+  <tr><td>Semantic History</td><td><code>editor: dev.zed.zed</code></td><td>⌘-click a file or <code>file:line</code> to open it in Zed</td></tr>
+  <tr><td>Triggers</td><td><code>[]</code></td><td>Empty on purpose: it overrides the Default profile's Claude Code Workgroup triggers, which would move Claude tabs into a separate "Chat" session that ignores this profile. You can still enter the workgroup from <b>Shell → Workgroups → Claude Code</b>.</td></tr>
+  <tr><td>Use Custom Tab Title / Custom Tab Title</td><td><code>true</code> / <code>\(user.title)</code></td><td>The tab shows the variable that <code>iterm.zsh</code> sets (<code>repo</code> or <code>repo ▸ cmd</code>)</td></tr>
+  <tr><td>Colour keys (Ansi 0–15, Background, Foreground…)</td><td>from <code>iterm/colors/</code></td><td>The theme. Dotfiles uses Catppuccin Mocha, and each theme profile overrides only these.</td></tr>
+  </tbody>
+</table>
+<h3>App-wide iTerm preferences set by bootstrap</h3>
+<table>
+  <thead><tr><th>Preference</th><th>Value</th><th>Why</th></tr></thead>
+  <tbody>
+  <tr><td>Default Bookmark Guid</td><td>Dotfiles profile</td><td>New windows and tabs use the Dotfiles profile</td></tr>
+  <tr><td>AllowClipboardAccess</td><td><code>true</code></td><td>Terminal apps can copy to the clipboard (Claude Code <code>/copy</code>)</td></tr>
+  </tbody>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="system">6. System changes bootstrap makes</h2>
+<table>
+  <thead><tr><th>Change</th><th>Why</th><th>How to undo</th></tr></thead>
+  <tbody>
+  <tr><td>Installs Homebrew packages and apps from <code>Brewfile</code></td><td>Same tools on every Mac</td><td><code>brew uninstall &lt;name&gt;</code></td></tr>
+  <tr><td>Skips apps already in /Applications</td><td>Doesn't overwrite apps you or your IT installed</td><td>—</td></tr>
+  <tr><td><code>chmod go-w $(brew --prefix)/share</code></td><td>zsh refuses to load completions from group-writable folders</td><td><code>chmod g+w …</code></td></tr>
+  <tr><td>Installs SDKMAN plus the versions in <code>sdkman.txt</code></td><td>Java and Gradle without system packages</td><td><code>sdk uninstall …</code></td></tr>
+  <tr><td>Moves replaced files to <code>~/.dotfiles-backup/</code></td><td>Nothing is lost</td><td>Move them back</td></tr>
+  <tr><td>Two iTerm preferences (above)</td><td>Default profile and clipboard</td><td>iTerm Settings → Profiles / General</td></tr>
+  <tr><td>Imports zsh history into Atuin (once)</td><td>Ctrl-R finds your old commands too</td><td><code>rm -r ~/.atuin</code></td></tr>
+  <tr><td>Repo-only git settings: hook path and no-reply email</td><td>Protects the repo if you publish it</td><td><code>git config --unset core.hooksPath</code></td></tr>
+  </tbody>
+</table>
+<p class="muted">Recommended Claude Code setting (in <code>~/.claude/settings.json</code>, not managed by this repo): <code>"env": { "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1" }</code>, so tab titles stay on the repo name.</p>
+
+<!-- ===================================================================== -->
+<h2 id="new-laptop">7. On a new laptop</h2>
+<pre><code>git clone https://github.com/AdityaMisra/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./bootstrap.sh --dry-run   # preview
+./bootstrap.sh             # install + link + configure</code></pre>
+<ol>
+  <li>If <code>git</code> asks to install the Command Line Tools, accept, then clone again.</li>
+  <li>Bootstrap asks for your git name and email once, and Homebrew may ask for your password.</li>
+  <li>Quit and reopen iTerm2 (⌘Q).</li>
+  <li>Put your employer's setup in <code>~/.workrc</code> and machine extras in <code>~/.zshrc.local</code>.</li>
+  <li>Run <code>theme</code> to pick colours.</li>
+</ol>
+
+<footer>Generated from this repo. Update it when you add a feature, so the guide stays true.</footer>
+</main>
+</body>
+</html>

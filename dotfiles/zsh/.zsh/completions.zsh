@@ -1,39 +1,30 @@
+# Completion system. zsh-completions must be on fpath BEFORE compinit.
+fpath=("$HOMEBREW_PREFIX/share/zsh-completions" "$HOMEBREW_PREFIX/share/zsh/site-functions" "$HOME/.zsh/completions" $fpath)
+
 autoload -Uz compinit
-compinit -C
-
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-
-if command -v fzf >/dev/null 2>&1; then
-  if [[ -r "$HOME/.fzf.zsh" ]]; then
-    source "$HOME/.fzf.zsh"
-  elif command -v brew >/dev/null 2>&1; then
-    FZF_BASE="$(brew --prefix fzf 2>/dev/null)/shell"
-    [[ -r "$FZF_BASE/completion.zsh" ]] && source "$FZF_BASE/completion.zsh"
-    [[ -r "$FZF_BASE/key-bindings.zsh" ]] && source "$FZF_BASE/key-bindings.zsh"
-  fi
+_zcompdump="$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
+mkdir -p "${_zcompdump:h}"
+# Full security check at most once a day; otherwise use the cached dump (fast).
+if [[ -n $_zcompdump(#qN.mh+24) || ! -f $_zcompdump ]]; then
+  compinit -d "$_zcompdump"
+else
+  compinit -C -d "$_zcompdump"
 fi
+unset _zcompdump
 
-command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*'  # case-insensitive + fuzzy-ish
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/compcache"
+zstyle ':completion:*' menu no                    # fzf-tab draws the menu
 
-if [[ -d "$HOME/.sdkman" ]]; then
-  export SDKMAN_DIR="$HOME/.sdkman"
-  [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-fi
-
-export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-  source "$NVM_DIR/nvm.sh"
-  [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-fi
-
-if command -v brew >/dev/null 2>&1; then
-  HB_PREFIX="$(brew --prefix)"
-  if [[ -r "$HB_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-    source "$HB_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-  fi
-  if [[ -r "$HB_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-    source "$HB_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  fi
-  unset HB_PREFIX
+# fzf-tab (must load after compinit, before autosuggestions/highlighting)
+if [[ -r "$HOMEBREW_PREFIX/share/fzf-tab/fzf-tab.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/fzf-tab/fzf-tab.zsh"
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+  zstyle ':fzf-tab:*' fzf-flags --height=50%
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --icons $realpath'
+  zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always --icons $realpath'
 fi

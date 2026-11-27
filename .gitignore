@@ -1,16 +1,3 @@
-# Local overrides (root + hosts) — never committed.
-# Use anchored patterns so we don't accidentally match dotfiles/bin/.local/.
-/*.local
-/.zshrc.local
-/.gitconfig.local
-
-# Per-machine private overlays (real internal config, vault URLs, etc).
-# Put employer-specific Brewfile.work / install.sh / zshrc.local in
-# hosts/<alias>.local/ instead of hosts/<alias>/ to keep it out of git.
-hosts/*.local/
-hosts/_map.local.sh
-hosts/*/secret*
-
 # macOS
 .DS_Store
 
@@ -18,10 +5,5 @@ hosts/*/secret*
 *.swp
 *~
 
-# Stowed shell artifacts
-dotfiles/zsh/.zsh_history
-dotfiles/zsh/.zsh_sessions/
-
-# Bootstrap log output
-.logs/
-*.log
+# Local overrides never belong in the repo
+*.local

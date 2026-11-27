@@ -1,0 +1,4 @@
+# SDKMAN candidates installed by bootstrap.sh: <candidate> <version> [default]
+java 17.0.12-tem default
+java 11.0.24-tem
+gradle 9.9.1 default

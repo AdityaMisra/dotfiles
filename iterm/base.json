@@ -1,0 +1,84 @@
+{
+  "_default_theme": "Catppuccin Mocha",
+  "Name": "Dotfiles",
+  "Tags": [
+    "dotfiles"
+  ],
+  "Dynamic Profile Parent Name": "Default",
+  "Normal Font": "JetBrainsMonoNFM-Regular 14",
+  "Use Non-ASCII Font": false,
+  "ASCII Anti Aliased": true,
+  "Use Bold Font": true,
+  "Use Bright Bold": true,
+  "Use Italic Font": true,
+  "Horizontal Spacing": 1,
+  "Vertical Spacing": 1.1,
+  "Minimum Contrast": 0,
+  "Columns": 160,
+  "Rows": 45,
+  "Unlimited Scrollback": true,
+  "Custom Directory": "Recycle",
+  "Close Sessions On End": true,
+  "Terminal Type": "xterm-256color",
+  "Mouse Reporting": true,
+  "Cursor Type": 1,
+  "Blinking Cursor": false,
+  "Load Shell Integration Automatically": true,
+  "Option Key Sends": 0,
+  "Right Option Key Sends": 2,
+  "Keyboard Map": {
+    "0x7f-0x80000": {
+      "Action": 11,
+      "Text": "0x1b 0x7f"
+    },
+    "0x7f-0x100000": {
+      "Action": 11,
+      "Text": "0x15"
+    },
+    "f702-0x280000": {
+      "Action": 10,
+      "Text": "b"
+    },
+    "f703-0x280000": {
+      "Action": 10,
+      "Text": "f"
+    },
+    "f702-0x300000": {
+      "Action": 11,
+      "Text": "0x1"
+    },
+    "f703-0x300000": {
+      "Action": 11,
+      "Text": "0x5"
+    },
+    "f728-0x80000": {
+      "Action": 10,
+      "Text": "d"
+    },
+    "f728-0x0": {
+      "Action": 11,
+      "Text": "0x4"
+    }
+  },
+  "Silence Bell": true,
+  "Visual Bell": true,
+  "Flashing Bell": false,
+  "BM Growl": true,
+  "Send Terminal Generated Alerts": true,
+  "Send Bell Alert": false,
+  "Send Idle Alert": false,
+  "Send New Output Alert": false,
+  "Send Session Ended Alert": false,
+  "_comment_semantic_history": "Cmd-click a path or path:line in output -> open in Zed",
+  "Semantic History": {
+    "action": "editor",
+    "editor": "dev.zed.zed",
+    "text": ""
+  },
+  "_comment_triggers": "Empty on purpose. It overrides iTerm's Default profile, whose Claude Code Workgroup triggers would move Claude tabs into a separate 'Chat' session that ignores this profile. Enter the workgroup manually via Shell > Workgroups > Claude Code.",
+  "Triggers": [],
+  "_comment_cursor": "Cursor Type: 0 = underline, 1 = vertical bar (line), 2 = box",
+  "_comment_title": "Tab title = user.title, set by ~/.zsh/iterm.zsh: 'repo' at the prompt, 'repo ▸ cmd' while a command runs",
+  "Use Custom Tab Title": true,
+  "Custom Tab Title": "\\(user.title)"
+}
