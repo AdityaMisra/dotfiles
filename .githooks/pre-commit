@@ -28,9 +28,10 @@ fi
 
 # --- 2. author email ---------------------------------------------------------
 email="$(git config user.email || true)"
-if [[ "$email" != *@users.noreply.github.com ]]; then
+if ! [[ "$email" =~ ^[0-9]+\+[^@]+@users\.noreply\.github\.com$ ]]; then
   red "pre-commit: commit email is '$email' — this repo is public."
-  red "  fix: git config user.email <id>+<user>@users.noreply.github.com"
+  red "  Use your GitHub no-reply address (github.com/settings/emails):"
+  red "  git config user.email <id>+<login>@users.noreply.github.com"
   fail=1
 fi
 

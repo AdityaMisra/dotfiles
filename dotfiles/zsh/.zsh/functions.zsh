@@ -16,10 +16,11 @@ mkcd() { mkdir -p -- "$1" && cd -- "$1"; }
 idea() { open -na "IntelliJ IDEA.app" --args "${@:-.}"; }
 
 # Interactive shell in a throwaway container with $PWD mounted at /work
+# dockerit <image> [docker run options...]   e.g. dockerit ubuntu -e FOO=1 -p 8080:8080
 dockerit() {
-  local image="${1:-alpine}"; shift 2>/dev/null
-  local sh=/bin/bash; [[ $image == alpine* ]] && sh=/bin/sh
-  docker run --rm -it -v "$PWD:/work" -w /work "$image" "$@" "$sh"
+  local image="${1:-alpine}"; (( $# )) && shift
+  local sh=/bin/bash; [[ $image == alpine* || $image == busybox* ]] && sh=/bin/sh
+  docker run --rm -it -v "$PWD:/work" -w /work "$@" "$image" "$sh"
 }
 
 extract() {
@@ -38,4 +39,4 @@ extract() {
 }
 
 # Measure shell startup time
-zsh-bench() { for i in {1..5}; do /usr/bin/time zsh -i -c exit; done; }
+zsh-bench() { local i; for i in {1..5}; do /usr/bin/time zsh -i -c exit; done; }

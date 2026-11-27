@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# commit-msg guard for this PUBLIC repo: the pre-commit hook checks file changes;
+# this checks the commit message against the same personal deny-list
+# (~/.config/dotfiles/forbidden-words + your ~/.gitconfig.local email).
+# Bypass in an emergency (not recommended): git commit --no-verify
+set -euo pipefail
+
+msg_file="$1"
+words=()
+list="${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/forbidden-words"
+if [[ -r "$list" ]]; then
+  while IFS= read -r w; do
+    [[ -z "$w" || "$w" == \#* ]] || words+=("$w")
+  done < "$list"
+fi
+local_email="$(git config --file "$HOME/.gitconfig.local" user.email 2>/dev/null || true)"
+[[ -n "$local_email" ]] && words+=("$local_email")
+(( ${#words[@]} )) || exit 0
+
+msg="$(grep -v '^#' "$msg_file" || true)"
+for w in "${words[@]}"; do
+  if grep -qiF -- "$w" <<<"$msg"; then
+    printf '\033[1;31m%s\033[0m\n' "commit-msg: message contains a forbidden word from $list. Commit blocked." >&2
+    exit 1
+  fi
+done

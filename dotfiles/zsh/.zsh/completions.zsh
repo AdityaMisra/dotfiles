@@ -5,14 +5,17 @@ autoload -Uz compinit
 _zcompdump="$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 mkdir -p "${_zcompdump:h}"
 # Full security check at most once a day; otherwise use the cached dump (fast).
+# compinit doesn't rewrite an unchanged dump, so touch it to restart the 24h clock.
 if [[ -n $_zcompdump(#qN.mh+24) || ! -f $_zcompdump ]]; then
-  compinit -d "$_zcompdump"
+  compinit -d "$_zcompdump" && touch "$_zcompdump"
 else
   compinit -C -d "$_zcompdump"
 fi
 unset _zcompdump
 
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*'  # case-insensitive + fuzzy-ish
+# Colours in completion menus (dirs blue, links cyan, executables green, ...).
+export LS_COLORS="${LS_COLORS:-di=1;34:ln=36:so=35:pi=33:ex=32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43}"
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:descriptions' format '[%d]'

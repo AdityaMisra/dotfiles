@@ -85,7 +85,7 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
   <tbody>
   <tr><td><b>Atuin history search</b></td>
       <td><kbd>Ctrl-R</kbd>, type any part of a command. Inside it, <kbd>Ctrl-R</kbd> cycles all → this machine → this tab → this folder. <kbd>Enter</kbd> puts the command on the line to edit.</td>
-      <td>Finds any past command with its folder, time and exit code. Shared across tabs. Sync is off, so nothing leaves the machine.</td>
+      <td>Finds any past command with its folder, time and exit code. Shared across tabs. Sync is off, so nothing leaves the machine. Commands that set a token, secret, password or API key aren't saved here or in <code>~/.zsh_history</code>.</td>
       <td><a href="../dotfiles/atuin/.config/atuin/config.toml">atuin/config.toml</a>, <a href="../dotfiles/zsh/.zsh/tools.zsh">tools.zsh</a></td></tr>
   <tr><td><b>Prefix history</b></td>
       <td>Type <code>git</code> and press <kbd>↑</kbd> / <kbd>↓</kbd></td>
@@ -161,8 +161,8 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
       <td><a href="../scripts/gwt">scripts/gwt</a>, <a href="../scripts/gclean">scripts/gclean</a></td></tr>
   <tr><td><b>Secret guard</b></td>
       <td>Automatic on every commit in this repo</td>
-      <td>Blocks keys, tokens, your email and any words you list from being published.</td>
-      <td><a href="../.githooks/pre-commit">.githooks/pre-commit</a></td></tr>
+      <td>Blocks keys, tokens, your email and any words you list from being published, in file changes and in commit messages.</td>
+      <td><a href="../.githooks/pre-commit">pre-commit</a>, <a href="../.githooks/commit-msg">commit-msg</a></td></tr>
   <tr><td><b>One-command setup</b></td>
       <td><code>./bootstrap.sh</code> (<code>--dry-run</code> to preview)</td>
       <td>A new Mac gets identical tools, apps, editors and settings in minutes.</td>
@@ -183,7 +183,7 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
   <div class="box"><b>Home</b>~/.zshrc</div><span class="arrow">→</span>
   <div class="box"><b>zsh reads it</b>every new tab</div>
 </div>
-<p>Editing either side changes both, because they're the same file. <code>git pull</code> updates your setup instantly. Re-run <code>./bootstrap.sh</code> only when new tools or files are added.</p>
+<p>Editing either side changes both, because they're the same file. After <code>git pull</code>, changes to existing files apply instantly. Re-run <code>./bootstrap.sh</code> (or <code>./update.sh</code>) when new tools or files are added, or when the iTerm profiles change.</p>
 
 <h3>What happens when you open a tab</h3>
 <div class="flow">
@@ -228,7 +228,7 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
   <tr><td><a href="../bootstrap.sh">bootstrap.sh</a></td><td>—</td><td>The installer: packages, toolchains, links, private files, iTerm, repo guard</td></tr>
   <tr><td><a href="../update.sh">update.sh</a></td><td>—</td><td><code>git pull</code>, then bootstrap</td></tr>
   <tr><td><a href="../Brewfile">Brewfile</a></td><td>—</td><td>Every Homebrew tool and app. Apps already in /Applications are skipped.</td></tr>
-  <tr><td><a href="../sdkman.txt">sdkman.txt</a></td><td>—</td><td>Java and Gradle versions (SDKMAN), and which are the defaults</td></tr>
+  <tr><td><a href="../sdkman.txt">sdkman.txt</a></td><td>—</td><td>Java and Gradle versions (SDKMAN) and which are the defaults. <code>17-tem</code> means the newest Java 17 Temurin build.</td></tr>
   <tr><td><a href="../uv-tools.txt">uv-tools.txt</a></td><td>—</td><td>Python CLI tools installed with <code>uv tool install</code></td></tr>
   <tr><td><a href="../dotfiles/zsh/.zshenv">zsh/.zshenv</a></td><td><code>~/.zshenv</code></td><td>Editor (Zed → VS Code → vim), pager, XDG folders</td></tr>
   <tr><td><a href="../dotfiles/zsh/.zprofile">zsh/.zprofile</a></td><td><code>~/.zprofile</code></td><td>Homebrew, Docker and OrbStack on PATH (login shells)</td></tr>
@@ -255,7 +255,9 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
   <tr><td><a href="../iterm/base.json">iterm/base.json</a></td><td>—</td><td>iTerm profile settings (explained <a href="#iterm">below</a>)</td></tr>
   <tr><td><a href="../iterm/build-profiles.py">iterm/build-profiles.py</a></td><td>—</td><td>Builds the profiles file and makes iTerm reload it</td></tr>
   <tr><td><a href="../dotfiles/iterm/Library/Application%20Support/iTerm2/DynamicProfiles/dotfiles.json">…/DynamicProfiles/dotfiles.json</a></td><td><code>~/Library/Application Support/iTerm2/DynamicProfiles/</code></td><td>Generated. Don't edit it by hand.</td></tr>
-  <tr><td><a href="../.githooks/pre-commit">.githooks/pre-commit</a></td><td>—</td><td>Secret and personal-detail check on commit</td></tr>
+  <tr><td><a href="../.githooks/pre-commit">.githooks/pre-commit</a></td><td>—</td><td>Secret and personal-detail check on the files you commit</td></tr>
+  <tr><td><a href="../.githooks/commit-msg">.githooks/commit-msg</a></td><td>—</td><td>The same deny-list check on the commit message</td></tr>
+  <tr><td><a href="../scripts/_lib.sh">scripts/_lib.sh</a></td><td>—</td><td>Shared helpers for <code>gwt</code> and <code>gclean</code></td></tr>
   <tr><td><a href="../extras/">extras/</a></td><td>—</td><td>Old full-laptop automation, kept for reference and never installed</td></tr>
   </tbody>
 </table>
@@ -317,7 +319,7 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
   <thead><tr><th>Preference</th><th>Value</th><th>Why</th></tr></thead>
   <tbody>
   <tr><td>Default Bookmark Guid</td><td>Dotfiles profile</td><td>New windows and tabs use the Dotfiles profile</td></tr>
-  <tr><td>AllowClipboardAccess</td><td><code>true</code></td><td>Terminal apps can copy to the clipboard (Claude Code <code>/copy</code>)</td></tr>
+  <tr><td>AllowClipboardAccess</td><td><code>true</code></td><td>Terminal programs can write to the clipboard (Claude Code <code>/copy</code>). This includes programs on servers you SSH into, so turn it off if you connect to machines you don't trust.</td></tr>
   </tbody>
 </table>
 
@@ -326,14 +328,15 @@ Links open the file in this repo. Paths starting with <code>~</code> are in your
 <table>
   <thead><tr><th>Change</th><th>Why</th><th>How to undo</th></tr></thead>
   <tbody>
-  <tr><td>Installs Homebrew packages and apps from <code>Brewfile</code></td><td>Same tools on every Mac</td><td><code>brew uninstall &lt;name&gt;</code></td></tr>
+  <tr><td>Installs Homebrew packages and apps from <code>Brewfile</code> (and <code>Brewfile.local</code>), without upgrading ones you already have</td><td>Same tools on every Mac</td><td><code>brew uninstall &lt;name&gt;</code></td></tr>
+  <tr><td>Marks third-party formulae named in the Brewfiles as trusted (<code>brew trust</code>)</td><td>Homebrew ignores untrusted taps</td><td><code>brew untrust --formula …</code></td></tr>
   <tr><td>Skips apps already in /Applications</td><td>Doesn't overwrite apps you or your IT installed</td><td>—</td></tr>
   <tr><td><code>chmod go-w $(brew --prefix)/share</code></td><td>zsh refuses to load completions from group-writable folders</td><td><code>chmod g+w …</code></td></tr>
   <tr><td>Installs SDKMAN plus the versions in <code>sdkman.txt</code></td><td>Java and Gradle without system packages</td><td><code>sdk uninstall …</code></td></tr>
   <tr><td>Moves replaced files to <code>~/.dotfiles-backup/</code></td><td>Nothing is lost</td><td>Move them back</td></tr>
   <tr><td>Two iTerm preferences (above)</td><td>Default profile and clipboard</td><td>iTerm Settings → Profiles / General</td></tr>
-  <tr><td>Imports zsh history into Atuin (once)</td><td>Ctrl-R finds your old commands too</td><td><code>rm -r ~/.atuin</code></td></tr>
-  <tr><td>Repo-only git settings: hook path and no-reply email</td><td>Protects the repo if you publish it</td><td><code>git config --unset core.hooksPath</code></td></tr>
+  <tr><td>Imports zsh history into Atuin (once; remembered in <code>~/.local/state/dotfiles/</code>)</td><td>Ctrl-R finds your old commands too</td><td><code>rm -r ~/.atuin</code></td></tr>
+  <tr><td>Repo-only git settings: hook path and no-reply email (<code>&lt;id&gt;+&lt;login&gt;@users.noreply.github.com</code>)</td><td>Protects the repo if you publish it</td><td><code>git config --unset core.hooksPath</code></td></tr>
   </tbody>
 </table>
 <p class="muted">Recommended Claude Code setting (in <code>~/.claude/settings.json</code>, not managed by this repo): <code>"env": { "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1" }</code>, so tab titles stay on the repo name.</p>

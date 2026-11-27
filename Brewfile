@@ -37,6 +37,7 @@ brew "wget"
 # --- Dev tooling ------------------------------------------------------------------
 brew "awscli"
 brew "uv"                      # Python packages/tools (see uv-tools.txt)
+brew "ipython"                 # better Python REPL (config: dotfiles/ipython)
 brew "jira-cli"
 brew "googleworkspace-cli"     # gws: Google Docs/Sheets/Drive from the terminal
 
