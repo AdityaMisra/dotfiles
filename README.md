@@ -86,7 +86,7 @@ extras/                       # old full-laptop automation (Hammerspoon, launchd
 The profiles are an iTerm2 [Dynamic Profiles](https://iterm2.com/documentation-dynamic-profiles.html)
 file that iTerm reads straight from the repo:
 
-- **Dotfiles** (default): JetBrains Mono Nerd Font 14, unlimited scrollback, mouse reporting, built-in shell integration, notification alerts for escape-sequence messages (used by Claude Code), and new tabs open in the same directory.
+- **Dotfiles** (default): JetBrains Mono Nerd Font 16, unlimited scrollback, mouse reporting, built-in shell integration, notification alerts for escape-sequence messages (used by Claude Code), and new tabs open in the same directory.
 - **Keys**: the Natural Text Editing preset. ⌥←/→ jumps by word, ⌘←/→ goes to the start or end of the line, ⌥⌫ and ⌘⌫ delete a word or the whole line. **Right ⌥ is Meta (Esc+)**. Left ⌥ is left alone so that ⌥-combinations like ⌥3 = `#` on UK and many European layouts still work.
 - **Cmd-click** a file path (or `path:line`) in any output, like a stack trace or Claude's reply, to open it in **Zed**.
 - **Tab title**: the repo name, or `repo ▸ cmd` while something runs (e.g. `dotfiles ▸ claude`).
