@@ -10,7 +10,6 @@ command_timeout = 1000
 scan_timeout = 30
 
 format = """
-$os\
 $directory\
 $git_branch\
 $git_state\
@@ -30,13 +29,6 @@ $jobs\
 $time\
 $line_break\
 $character"""
-
-[os]
-disabled = false
-style = "bright-black"
-format = "[$symbol]($style)"
-[os.symbols]
-Macos = " "
 
 [directory]
 style = "bold blue"
